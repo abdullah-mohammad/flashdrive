@@ -1,5 +1,5 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/flashdrive/flashdrive:$SHORT_SHA', '.']
-- name: 'sudo -u $USER gcr.io/cloud-builders/docker'
+- name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/flashdrive/flashdrive:$SHORT_SHA']
