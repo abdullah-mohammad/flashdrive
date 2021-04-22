@@ -3,3 +3,17 @@ steps:
   args: ['build', '-t', 'gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA', '.']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA']
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - 'run'
+  - 'deploy'
+  - 'flashdrive'
+  - '--image'
+  - 'gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA'
+  - '--region'
+  - 'europe-west3'
+  - '--platform'
+  - 'managed'
+
+#gcloud beta run deploy flashdrive --region=europe-west3 --platform=managed --image=gcr.io/flashdrive/flashdrive:'
