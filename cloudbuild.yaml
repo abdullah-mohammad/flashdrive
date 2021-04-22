@@ -2,4 +2,4 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/flashdrive/gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA', '.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['pushh', 'gcr.io/flashdrive/gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA']
+  args: ['push', 'gcr.io/flashdrive/gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA']
