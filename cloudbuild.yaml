@@ -1,8 +1,8 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA', '.']
+  args: ['build', '-t', 'gcr.io/flashdrive-311519/flashdrive-container:$SHORT_SHA', '.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA']
+  args: ['push', 'gcr.io/flashdrive-311519/flashdrive-container:$SHORT_SHA']
 
 - name: 'gcr.io/cloud-builders/gcloud'
   args:
@@ -10,7 +10,7 @@ steps:
   - 'deploy'
   - 'flashdrive'
   - '--image'
-  - 'gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA'
+  - 'gcr.io/flashdrive-311519/flashdrive-container:$SHORT_SHA'
   - '--region'
   - 'europe-west3'
   - '--platform'
