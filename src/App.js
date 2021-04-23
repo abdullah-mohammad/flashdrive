@@ -9,7 +9,7 @@ function App() {
         <h1>Welcome to FlashDrive 😻</h1>
         <p>Tschüss!!!!!!!!!!!!!</p>
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Halllo
         </p>
         <a
           className="App-link"
