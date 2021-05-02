@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:mysql:///flashdrive_db?cloudSqlInstance=flashdrive-311519:europe-west3:flashdrive-db&socketFactory=com.google.cloud.sql.mysql.SocketFactory
+    username: root
+    password: fdb
+    #driver-class-name: com.mysql.jdbc.Driver

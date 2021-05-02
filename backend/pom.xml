@@ -14,7 +14,7 @@
 	<name>backend</name>
 	<description>Cloudbasiertes File-System</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -28,12 +28,41 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>
-			<version>1.2.8.RELEASE</version>
-		</dependency>
+		<!-- EXTRA DEPENDENCIES -->
+		<!-- GCP Starter for Cloud SQL -->
+			<!--<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-gcp-starter-sql-mysql</artifactId>
+				<version>1.2.8.RELEASE</version>
+			</dependency>-->
+		<!-- END GCP Starter for Cloud SQL -->
 
+		<!-- MySQL Socket Factory for Cloud SQL -->
+			<dependency>
+				<groupId>com.google.cloud.sql</groupId>
+				<artifactId>mysql-socket-factory</artifactId>
+				<version>1.2.2</version>
+			</dependency> <dependency>
+		<groupId>com.zaxxer</groupId>
+		<artifactId>HikariCP</artifactId>
+		<version>4.0.3</version>
+	</dependency>
+			<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jdbc -->
+			<!--<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-jdbc</artifactId>
+				<version>2.4.5</version>
+			</dependency>-->
+			<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+			<!--<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>8.0.24</version>
+			</dependency>-->
+		<!-- END MySQL Socket Factory for Cloud SQL -->
+
+
+		<!-- END EXTRA DEPENDENCIES -->
 	</dependencies>
 
 	<build>
