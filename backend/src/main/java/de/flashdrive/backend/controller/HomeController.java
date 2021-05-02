@@ -30,23 +30,9 @@ public class HomeController {
         return jdbcTemplate.queryForList("SELECT * FROM Users;");
     }*/
 
-    private HikariDataSource connectionPool;
-
-    @GetMapping("/")
-    public String index() throws SQLException {
-
-        List<String> bookList = new ArrayList<>();
-        try (Connection conn = connectionPool.getConnection()) {
-            String stmt = "SELECT * FROM Users";
-            try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
-                selectStmt.setQueryTimeout(10); // 10s
-                ResultSet rs = selectStmt.executeQuery();
-                while (rs.next()) {
-                    System.out.println("QQQQQ: "+rs.getString("firstname"));
-                }
-            }
-        }
-        return "bookList";
-    }
+   @GetMapping("/")
+    public String index() {
+       return "Hallo Leute !";
+   }
 
 }
