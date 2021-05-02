@@ -3,5 +3,5 @@ steps:
   args: ['up', '-d']
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', 'workspace_app:latest', 'gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA']
-images: ['gcr.io/$PROJECT_ID/$REPO_NAME:$COMMIT_SHA']
+  args: ['build', '-t', 'gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA', '.']
+images: ['gcr.io/$PROJECT_ID/flashdrive:latest']
