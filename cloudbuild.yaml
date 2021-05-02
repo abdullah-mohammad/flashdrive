@@ -5,3 +5,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA', '.']
 images: ['gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA']
+
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: ['tag', 'workspace_app:latest', 'gcr.io/flashdrive-311519/flashdrive:$COMMIT_SHA']
+# images: ['gcr.io/flashdrive-311519/flashdrive:$COMMIT_SHA']
