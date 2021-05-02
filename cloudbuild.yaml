@@ -1,6 +1,8 @@
 steps:
-- name: ‘docker/compose:1.19.0’
-  args: [‘up’, ‘-d’]
+- name: 'docker/compose:1.15.0'
+  args: ['up', '-d']
+  env:
+  - 'PROJECT_ID=$PROJECT_ID'
 - name: 'gcr.io/cloud-builders/docker'
   args: ['tag', 'workspace_app:latest', 'gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA']
 images: ['gcr.io/flashdrive-311519/flashdrive:$COMMIT_SHA']
