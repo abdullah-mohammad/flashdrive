@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "flashdrive-311519",
+  "private_key_id": "fef94b31ca819eadc00980f941f4153035cce147",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDxTbV7AzeGIUcH\n8rw6xBh/N4NYw3Lrv4Y14p4nQbkpYcyxbSAs6cWA+gp2GR64fjh5sY0TdgBiPIqe\nOrDO5WdmPXaFj0k90xm7ocxck3yp4v5PtXzoLJgEkj2Xs41+kzmZIJUANvpZWIsb\nQsTIKJYj07l3hOqyvLp7thvtwYdlZugLWwvNQNRWjNJhzQ7pCNrNZNhI/OJ07WC3\ni06ozopil4ZT01VIEuhndam97AtggPT+DJU/ygghRGZOJr69JwNlc6mG9SMqVAJG\nxe0u5u/2fIxSM5iJO6VRrrKxJg+EUID3ylqiGnDTWK0/21cydnJjJo9OGL6cM+wA\nVIHHKWvhAgMBAAECggEANzddekcbqv0taFOyn83kfyPgUezzfJ+oYec34mrHKIGB\nGe6LKMvbjm5o+2o3HeeAG9S1oAjmAJSy8Y8ji0xyMzKITvqhO1z1a/qTrXFwWt2e\n7PVuHiCqLo2aO37yN08QJIqQnep2sgAxYK0QI28qIAugSomnPPwzvgBHdsnMpjaK\nzjK/suH8i74d1jonm5HgRvscixl2Vi3V1xmfzEWl0g/3WqUiV4UkO72AbhlChNK+\nGjGoLq2avWbX9WcWPiBbWbeRgVRJUCQxKEcB4RigwaKMVi7boBC9nOd9zJFLdMxq\nC7FPTA6mcegXUb8RoLFHf1XlTYF26XQZVtU4HFMEmQKBgQD5H5m7U1aqLTcRVmu0\nV7U/gDtWjCUXGseuTalT67AVPOvqLTkrtbRaKligFnNn6F/dGuWo7zNmLx4hsCnX\nHzgFpSY4WGsKG2vK1w6hmr1dGqmLG6Oy6KofoSGlJp6pgMuUnc99nr0cvYhEH0xy\n+iepY7VfWCyBJNeUKzlU5ayBpQKBgQD39tmiHUcU2nc+zn1K74f/w77MOMr3gvFz\nrhj/+QD1O7H0AMPq3C7hqj34/dQTUsHU8iK50GiV/w/frJdQmQhXbjpr7y9u6GMY\nMpd7PP2yMidirI9ExZR0kLiSMAb5wAYq9M3+ST6B4oH1aHP/swEv8L8ClHqeiAev\nS4qUT6a0jQKBgQC2Nq3b/R3ThRTVIo/OraRNWP6N1B3A436P+A/U6Pu23QN1GjTJ\nyrKqjHScSy+IHcgYUfcO9D51DBuO6moABb6VKnFlHw7TqrDSATCbdTHyanD95W57\nin/8eH/Caxf7xM+i2TaNnFCYN+z2XqotItllpR9hKH4My6S+pErf1MmzXQKBgHMl\nRSC72cM8Q719o78FhjDl1Bb/lHjlbHwcb22GUsSOSO+W32OThY2zQX37WNz0RCA/\npJKGzdpBjDyA5+88cRwwip6OfodREJsu+xr2UpTKJ3Hx0cHMwkhy39K6zLJzUinm\nbjXUC1vDNDginiMyG64IbJqlGl+9qVvkh2ChsDcNAoGAeRifIrOpI1xyr7eE/TgV\ngpwz0uxcyQbswd/oXN4cu/t8FCQcATHKvV2km7kR9TghkoadX1G4Dp4vkw9vYZc7\n1jm9P8AfnLiIzANYWs7P2td0EgeNM0zt5/s7aj4/RhdE+LO50zdOxfDfujZLfvg2\n6GeIbm+xN6rtyMYIKNNfS4A=\n-----END PRIVATE KEY-----\n",
+  "client_email": "springboot-service-account@flashdrive-311519.iam.gserviceaccount.com",
+  "client_id": "101360689592801570404",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/springboot-service-account%40flashdrive-311519.iam.gserviceaccount.com"
+}
