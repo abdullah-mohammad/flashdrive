@@ -6,11 +6,14 @@ version: '3.7'
 services:
   # App backend service
   backend:
+    # build: 
+    #   context: backend # Use an image built from the specified dockerfile in the `frontend` directory.
+    #   dockerfile: Dockerfile
     # Configuration for building the docker image for the backend service
     build: ./backend
     image: gcr.io/flashdrive/flashdrive_backend:latest
     ports:
-      - "8080:8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
+      - "8081:8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
     restart: always     
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
       - backend
