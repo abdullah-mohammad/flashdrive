@@ -15,9 +15,9 @@ services:
     ports:
       - "8081:8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
     restart: always     
-    networks: # Networks to join (Services on the same network can communicate with each other using their name)
-      - backend
-      - frontend
+    # networks: # Networks to join (Services on the same network can communicate with each other using their name)
+    #   - backend
+    #   - frontend
 
 #  Frontend Service 
   frontend:
@@ -28,10 +28,10 @@ services:
     restart: always
     depends_on:
       - backend
-    networks:
-      - frontend  
+    # networks:
+    #   - frontend  
 
 # Networks to be created to facilitate communication between containers
-networks:
-  backend:
-  frontend: 
+# networks:
+#   backend:
+#   frontend: 
