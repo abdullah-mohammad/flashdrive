@@ -7,9 +7,8 @@ services:
   # App backend service
   backend:
     # Configuration for building the docker image for the backend service
-    build:
-      build: ./backend
-      image: gcr.io/flashdrive/flashdrive_backend:latest
+    build: ./backend
+    image: gcr.io/flashdrive/flashdrive_backend:latest
     ports:
       - "8080:8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
     restart: always     
