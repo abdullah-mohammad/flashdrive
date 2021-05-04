@@ -1,11 +1,7 @@
 steps:
-- name: 'docker/compose:1.29.0'
+# running docker-compose
+- name: 'docker/compose:1.26.2'
   args: ['up', '-d']
-
-# - name: 'gcr.io/cloud-builders/docker'
-#   args: ['build', '-t', 'gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA', '.']
-# images: ['gcr.io/flashdrive-311519/flashdrive:$SHORT_SHA']
-
-# - name: 'gcr.io/cloud-builders/docker'
-#   args: ['tag', 'workspace_app:latest', 'gcr.io/flashdrive-311519/flashdrive:$COMMIT_SHA']
-# images: ['gcr.io/flashdrive-311519/flashdrive:$COMMIT_SHA']
+# running docker-compose push to push service images to GCR
+- name: 'docker/compose:1.26.2'
+  args: ['push']
