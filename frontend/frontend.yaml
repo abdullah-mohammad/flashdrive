@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: default
+  labels:
+    app: frontend
+spec:
+  selector:
+      matchLabels:
+        app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: backend
+          image: gcr.io/flashdrive-311519/flashdrive_frontend:latest
+          ports:
+          #- containerPort: 5000

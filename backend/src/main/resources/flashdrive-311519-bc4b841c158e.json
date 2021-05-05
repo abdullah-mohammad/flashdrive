@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "flashdrive-311519",
+  "private_key_id": "bc4b841c158e55f48e04974c584fb01321f83ae9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC22fnuWBA0Ajan\ntt3CRFBiway6CtTx8ECkmOtoRPw7sywxcLFP45StPJaVFqQw6WtDa50ZBfoqoHTW\nWq2M4Nrnq4Z7jvlULUMM27ifj2Ael+1y8gBwrGAHZxBkaUIekaAcDOHmzWg4QkfM\nlBfth3itgLKcR+rKYXNC1ZVqZn1FoMzKzadHGxi6F1LW0yosNRz4TGYqq2rT/Ke0\n0u3qpKSaUoXRpcT9W198kA8ejErD2twFpYe2X/sBWOftr62DQt8mpkm8jqXxOxmD\nmnkJzOeVcNlfn1G82DRMcoGokcyf9esHbskSDrG01jDG7DSLPemH2WWrBY6X95dp\nS1fnKevlAgMBAAECggEATlq25oM3IkpGiHTsr0gd2EvdC/YDTU+iK8ZZrhtNqPl8\n+Qys9qpztg6OCoIixtDnhYMSVTxB+M08c/R0hTd/pqHSZZUdU4x3vIVVJo7GZiW9\nezGnraC4H8Py+sw+KKJHpW2ByikAPYdthAV8AW25cUQChcStoJ7EyQGEXw1fJhvp\nGCSnG62+XZRQ21DpzUebR2fy3WP8hkjNu5uQwW92gxwaWJkrrkLtkq4Wj4tP3C1a\nBtkLAUy2Rjoy7nJwBaAy+fIoi9oCn3odvfubgH2hojZRs7RADRgZOQQ42HPp2V9s\nFEqsdX0UQ/Wy1AHFGI9kEO/KL13iKEmXlTbaldL0awKBgQDtoCXTcOLKIyp0kKpP\ndOg3RvbV9LwWCyHsi+Yv5seSsAneDUqxuOZqiiqrcFWIRCOZzq5kzihiXEtNz551\nm1kHwZ7nMnPToW0dJOM3p71WTRmyUlPZPB+DOpE1PvocwZZRzK3WNeeixxWZQlQN\ntJOVup6LFOc2J9KkdgX5sjEyiwKBgQDE/ZAJsG1/HSgNZqCNGnmlQiqhboDoxUAw\nOWFiEeGn2DOquk9lQkp4XdT3sxnfgUulcjPz8dBiJbGZw+HuXVlAkL3oedixLlIR\n5noYDBEgCj2Hd9uCezksmGQ1vX2mXhTfjhK9xyZTpZj3zOT38vXj/GCh9VqZjxJQ\nLr4AiFtZTwKBgQCtCBLDNs5N9vFxU+5QUYbOyaPwBHf5bT3Uq8KAWwI0NG/a+77K\nTyOprNaJZBFEWqm51CB1UxFhHmfPT0HJzcc0uK7nF3v0PPXhZPz3h/N9JkNx8DUS\nWI9x1XHrXeJukiDNi8eB1lrH00RNB1mBaV6Whv/vstbyPmlKTI7pVfIxJQKBgQC0\ndWjvR113tjkL1bk8qkVH/A5bpoSXOKPtyZMJqUHkZe4m99hl9c2M6MCBTeRk2Oh4\nnt8zGZIBZ3CEYWrm10M9H5upjX3SCpIKbe3pe5xwkpD9OfKwXLvqu4wJoxapQsSy\na0+F5RuaQziXwW78KenSOlA37jFaPTPUmo1apY+xhwKBgF3PHIXCVOT2DW5EjPdQ\njiyQZx80LXKwCKCa81mYgGwpHZY+UjGXONCVEwruRrgFLdV0O3gVpFA5w3n9ndNM\nHREBwddzfIC1XGmfss45MPRIdrEfwQUEA5/e1ZIsouOn4s5sSGt3EGCiD6czb3Y6\ncOaZbYuWcF7we1XDtDH+LoKs\n-----END PRIVATE KEY-----\n",
+  "client_email": "database-service-account@flashdrive-311519.iam.gserviceaccount.com",
+  "client_id": "106081457442906401503",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/database-service-account%40flashdrive-311519.iam.gserviceaccount.com"
+}
