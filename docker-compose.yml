@@ -5,27 +5,27 @@ version: '3.7'
 # Define services
 services:
   # App backend service
-  backend:
+  #WEGbackend:
     # build: 
     #   context: backend # Use an image built from the specified dockerfile in the `frontend` directory.
     #   dockerfile: Dockerfile
     # Configuration for building the docker image for the backend service
-    build: ./backend
-    image: gcr.io/flashdrive-311519/flashdrive_backend:latest
-    ports:
-      - "9090:8080" # Forward the exposed port 8080 on the container to port 8080 on the host machine
-    restart: always     
+    #WEGbuild: ./backend
+    #WEGimage: gcr.io/flashdrive-311519/flashdrive_backend:latest
+    #WEGports:
+      #WEG- "9090:8080" # Forward the exposed port 8080 on the container to port 9090 on the host machine
+    #WEGrestart: always     
     # networks: # Networks to join (Services on the same network can communicate with each other using their name)
     #   - backend
     #   - frontend
 
 #  Frontend Service 
-  #WEGfrontend:
-    #WEGbuild: ./frontend
-    #WEGimage: gcr.io/flashdrive-311519/flashdrive_frontend:latest
-    #WEGports:
-      #WEG- "5000:80" # Map the exposed port 80 on the container to port 5000 on the host machine
-    #WEGrestart: always
+  frontend:
+    build: ./frontend
+    image: gcr.io/flashdrive-311519/flashdrive_frontend:latest
+    ports:
+      - "5000:80" # Map the exposed port 80 on the container to port 5000 on the host machine
+    restart: always
     # depends_on:
     #   - backend
     # networks:
