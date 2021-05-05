@@ -68,6 +68,8 @@ spec:
       containers:
         - name: backend
           image: gcr.io/flashdrive-311519/flashdrive_backend:latest
+          ports:
+          - containerPort: 8080
           env:
             - name: MYSQL_URL
               value: jdbc:mysql://127.0.0.1:3306/flashdrive_db
@@ -81,8 +83,6 @@ spec:
                 secretKeyRef:
                   name: cloudsql-db-credentials
                   key: password
-          ports:
-          - containerPort: 8080
         - name: cloudsql-proxy
           image: gcr.io/cloudsql-docker/gce-proxy:1.11
           command: ["/cloud_sql_proxy",
