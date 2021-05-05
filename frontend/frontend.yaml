@@ -41,5 +41,4 @@ spec:
         - name: backend
           image: gcr.io/flashdrive-311519/flashdrive_frontend:latest
           ports:
-          #- containerPort: 5000
 
