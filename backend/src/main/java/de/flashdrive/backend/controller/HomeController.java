@@ -26,14 +26,14 @@ public class HomeController {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @GetMapping("/api")
+    /*@GetMapping("/api")
     public List<Map<String, Object>> listUsers() throws IOException {
         return jdbcTemplate.queryForList("SELECT * FROM Users;");
-    }
+    }*/
 
-   /*@GetMapping("/api")
+   @GetMapping("/api")
     public String index() {
        return "Hallo Leute !";
-   }*/
+   }
 
 }
