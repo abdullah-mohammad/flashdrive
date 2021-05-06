@@ -9,7 +9,7 @@ function App() {
         <h1>Welcome to FlashDrive 😻</h1>
         <p>Tschüss!!!!!!!!!!!!!</p>
         <p>
-          Scheiße
+          Let's try again!
         </p>
         <a
           className="App-link"
