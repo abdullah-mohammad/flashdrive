@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-deployment
+  name: backend
   namespace: default
   labels:
     app: backend
@@ -48,3 +48,52 @@ spec:
       - name: cloudsql-instance-credentials
         secret:
           secretName: cloudsql-instance-credentials
+
+
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: backend
+# spec:
+#   selector:
+#     matchLabels:
+#       app: backend
+#   replicas: 1
+#   template:
+#     metadata:
+#       labels:
+#         app: backend
+#     spec:
+#       containers:
+#         - name: backend
+#           image: gcr.io/flashdrive-311519/flashdrive_backend:latest
+#           env:
+#             - name: MYSQL_URL
+#               value: jdbc:mysql://127.0.0.1:3306/flashdrive_db
+#             - name: MYSQL_USERNAME
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: cloudsql-db-credentials
+#                   key: username
+#             - name: MYSQL_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: cloudsql-db-credentials
+#                   key: password
+#         - name: cloudsql-proxy
+#           image: gcr.io/cloudsql-docker/gce-proxy:1.11
+#           command: ["/cloud_sql_proxy",
+#                       "-instances=flashdrive-311519:europe-west3:flashdrive-db=tcp:3306",
+#                       "-credential_file=/secrets/cloudsql/credentials.json"]
+#           securityContext:
+#             runAsUser: 2  # non-root user
+#             allowPrivilegeEscalation: false
+#           volumeMounts:
+#             - name: cloudsql-instance-credentials
+#               mountPath: /secrets/cloudsql
+#               readOnly: true
+#       volumes:
+#       - name: cloudsql-instance-credentials
+#         secret:
+#           secretName: cloudsql-instance-credentials
