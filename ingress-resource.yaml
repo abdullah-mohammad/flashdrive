@@ -119,8 +119,7 @@ metadata:
   name: my-ingress555
 spec:
   rules:
-  - host: flashdrive-cloud.de
-    http:
+  - http:
       paths:
       - path: /*
         backend:
