@@ -5,7 +5,6 @@ steps:
 # running docker-compose push to push service images to GCR
 - name: 'docker/compose:1.26.2'
   args: ['push']
-
 # deploy container images to GKE
 - name: 'gcr.io/cloud-builders/kubectl'
   args: ['apply', '-f', 'frontend/frontend.yaml']
