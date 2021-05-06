@@ -5,16 +5,16 @@ steps:
 # running docker-compose push to push service images to GCR
 - name: 'docker/compose:1.26.2'
   args: ['push']
-# deploy container images to GKE
-- name: 'gcr.io/cloud-builders/kubectl'
-  args: ['apply', '-f', 'frontend/frontend.yaml']
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=react-springboot-own-test-cluster'
-- name: 'gcr.io/cloud-builders/kubectl'
-  args: ['apply', '-f', 'backend/backend.yaml']
-- name: 'gcr.io/cloud-builders/kubectl'
-  args: ['apply', '-f', 'ingress-resource.yaml']
+# # deploy container images to GKE
+# - name: 'gcr.io/cloud-builders/kubectl'
+#   args: ['apply', '-f', 'frontend/frontend.yaml']
+#   env:
+#   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+#   - 'CLOUDSDK_CONTAINER_CLUSTER=react-springboot-own-test-cluster'
+# - name: 'gcr.io/cloud-builders/kubectl'
+#   args: ['apply', '-f', 'backend/backend.yaml']
+# - name: 'gcr.io/cloud-builders/kubectl'
+#   args: ['apply', '-f', 'ingress-resource.yaml']
 
   # - name: 'gcr.io/cloud-builders/kubectl'
   #   args: ['create', '-f', 'frontend/frontend.yaml']
