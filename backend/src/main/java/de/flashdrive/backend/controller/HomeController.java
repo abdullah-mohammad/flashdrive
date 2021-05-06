@@ -36,4 +36,9 @@ public class HomeController {
        return "Hallo Leute !";
    }
 
+    @GetMapping("/")
+    public String index2() {
+        return "Na gut !";
+    }
+
 }
