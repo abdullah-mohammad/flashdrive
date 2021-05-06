@@ -10,7 +10,7 @@ steps:
   args: ['apply', '-f', 'frontend/frontend.yaml']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=flashdrive-cluster'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=gke_flashdrive-311519_europe-west3-a_flashdrive-cluster'
 # - name: 'gcr.io/cloud-builders/kubectl'
 #   args: ['apply', '-f', 'backend/backend.yaml']
 # - name: 'gcr.io/cloud-builders/kubectl'
