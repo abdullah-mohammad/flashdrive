@@ -16,6 +16,6 @@ public class HomeController {
 
     @GetMapping("/")
     public List<Map<String, Object>> listUsers() throws IOException {
-        return jdbcTemplate.queryForList("SELECT * FROM Users;");
+        return jdbcTemplate.queryForList("SELECT * FROM users;");
     }
 }

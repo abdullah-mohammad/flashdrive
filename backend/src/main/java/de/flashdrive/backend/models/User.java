@@ -127,4 +127,19 @@ public class User {
     public void setPicturePath(String picturePath) {
         this.picturePath = picturePath;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", gender='" + gender + '\'' +
+                ", address='" + address + '\'' +
+                ", picturePath='" + picturePath + '\'' +
+                '}';
+    }
 }

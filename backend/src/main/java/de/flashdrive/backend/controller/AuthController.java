@@ -87,7 +87,7 @@ public class AuthController {
                 signUpRequest.getGender(),
                 signUpRequest.getAddress(),
                 "");
-
+        System.out.println("------>" + user);
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
