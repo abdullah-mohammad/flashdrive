@@ -31,9 +31,9 @@ public class HomeController {
         return jdbcTemplate.queryForList("SELECT * FROM Users;");
     }
 
-   /*@GetMapping("/")
+   @GetMapping("/api")
     public String index() {
        return "Hallo Leute !";
-   }*/
+   }
 
 }
