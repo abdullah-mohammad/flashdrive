@@ -13,7 +13,9 @@ steps:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
   - 'CLOUDSDK_CONTAINER_CLUSTER=react-springboot-own-test-cluster'
 - name: 'gcr.io/cloud-builders/kubectl'
-  args: ['create', '-f', 'backend/backend.yaml']
+  args: ['apply', '-f', 'backend/backend.yaml']
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['apply', '-f', 'ingress-resource.yaml']
 
   # - name: 'gcr.io/cloud-builders/kubectl'
   #   args: ['create', '-f', 'frontend/frontend.yaml']
