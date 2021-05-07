@@ -6,11 +6,11 @@ steps:
 - name: 'docker/compose:1.26.2'
   args: ['push']
 # deploy container images to GKE
-# - name: 'gcr.io/cloud-builders/kubectl'
-#   args: ['apply', '-f', 'frontend/frontend.yaml']
-#   env:
-#   - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
-#   - 'CLOUDSDK_CONTAINER_CLUSTER=flashdrive-cluster'
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['apply', '-f', 'frontend/frontend.yaml']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=flashdrive-cluster'
 #   - 'KUBECONFIG=/workspace/flashdrive-cluster-kubeconfig'
 # - name: 'gcr.io/cloud-builders/kubectl'
 #   args: ['apply', '-f', 'backend/backend.yaml']
