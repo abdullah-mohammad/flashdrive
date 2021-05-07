@@ -7,7 +7,7 @@ export default class Home extends Component {
     super(props);
 
     this.state = {
-      content: "All things are working fine!"
+      content: "All things are working fine! 🙂"
     };
   }
 
