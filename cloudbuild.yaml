@@ -7,11 +7,31 @@ steps:
   args: ['push']
 # deploy container images to GKE cluster
 - name: 'gcr.io/cloud-builders/kubectl'
+  args: ['delete', 'service', 'frontend', '--ignore-not-found=true']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=flashdrive-cluster'
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['delete', 'deployment', 'frontend', '--ignore-not-found=true']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=flashdrive-cluster'
+- name: 'gcr.io/cloud-builders/kubectl'
   args: ['apply', '-f', 'frontend/frontend.yaml']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=flashdrive-cluster'
 
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['delete', 'service', 'backend', '--ignore-not-found=true']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=flashdrive-cluster'
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['delete', 'deployment', 'backend', '--ignore-not-found=true']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=flashdrive-cluster'
 - name: 'gcr.io/cloud-builders/kubectl'
   args: ['apply', '-f', 'backend/backend.yaml']
   env:
