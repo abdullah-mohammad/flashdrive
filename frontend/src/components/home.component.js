@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 
-import UserService from "../services/user.service";
+//import UserService from "../services/user.service";
 
 export default class Home extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      content: ""
+      content: "All things are working fine!"
     };
   }
 
-  componentDidMount() {
+  /* componentDidMount() {
     UserService.getPublicContent().then(
       response => {
         this.setState({
@@ -27,7 +27,7 @@ export default class Home extends Component {
         });
       }
     );
-  }
+  } */
 
   render() {
     return (
