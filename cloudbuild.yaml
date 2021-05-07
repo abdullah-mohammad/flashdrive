@@ -5,27 +5,21 @@ steps:
 # running docker-compose push to push service images to GCR
 - name: 'docker/compose:1.26.2'
   args: ['push']
-# deploy container images to GKE
+# deploy container images to GKE cluster
 - name: 'gcr.io/cloud-builders/kubectl'
   args: ['apply', '-f', 'frontend/frontend.yaml']
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=flashdrive-cluster'
-#   - 'KUBECONFIG=/workspace/flashdrive-cluster-kubeconfig'
-# - name: 'gcr.io/cloud-builders/kubectl'
-#   args: ['apply', '-f', 'backend/backend.yaml']
-# - name: 'gcr.io/cloud-builders/kubectl'
-#   args: ['apply', '-f', 'ingress-resource.yaml']
 
-  # - name: 'gcr.io/cloud-builders/kubectl'
-  #   args: ['create', '-f', 'frontend/frontend.yaml']
-  # - name: 'gcr.io/cloud-builders/kubectl'
-  #   args: ['create', '-f', 'backend/backend.yaml']
-
-  # - name: "gcr.io/cloud-builders/gke-deploy"
-  #   args:
-  #   - run
-  #   - --filename=frontend/frontend.yaml
-  #   - --image=gcr.io/flashdrive-311519/flashdrive_frontend:latest
-  #   - --location=europe-west3-a
-  #   - --cluster=flashdrive-cluster
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['apply', '-f', 'backend/backend.yaml']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=flashdrive-cluster'
+# create services with ingress-resource
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['apply', '-f', 'ingress-resource.yaml']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=flashdrive-cluster'

@@ -116,7 +116,9 @@ spec:
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: my-ingress555
+  name: gke-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: flashdrive-ip
 spec:
   rules:
   - http:
