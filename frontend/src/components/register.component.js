@@ -197,7 +197,7 @@ export default class Register extends Component {
 
   render() {
     return (
-      <div className="col-md-12">
+      <div className="col-md-12" style={{paddingTop: '2rem'}}>
         <div className="card card-container">
           <img
             src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"

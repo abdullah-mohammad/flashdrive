@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import { connect } from 'react-redux';
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 
-import AuthService from "../services/auth.service";
+import { loginUser } from "../redux/user/userActions";
 
 const required = value => {
   if (!value) {
@@ -15,7 +16,7 @@ const required = value => {
   }
 };
 
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
@@ -24,9 +25,7 @@ export default class Login extends Component {
 
     this.state = {
       username: "",
-      password: "",
-      loading: false,
-      message: ""
+      password: ""
     };
   }
 
@@ -45,37 +44,15 @@ export default class Login extends Component {
   handleLogin(e) {
     e.preventDefault();
 
-    this.setState({
-      message: "",
-      loading: true
-    });
-
     this.form.validateAll();
 
     if (this.checkBtn.context._errors.length === 0) {
-      AuthService.login(this.state.username, this.state.password).then(
-        () => {
-          this.props.history.push("/profile");
-          window.location.reload();
-        },
-        error => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-
-          this.setState({
-            loading: false,
-            message: resMessage
-          });
-        }
-      );
-    } else {
-      this.setState({
-        loading: false
-      });
+        this.props.loginUser({username: this.state.username, password: this.state.password}).then(
+            () => {
+                this.props.history.push("/profile");
+                window.location.reload();
+            }
+        )
     }
   }
 
@@ -122,19 +99,19 @@ export default class Login extends Component {
             <div className="form-group">
               <button
                 className="btn btn-primary btn-block"
-                disabled={this.state.loading}
+                disabled={this.props.loading}
               >
-                {this.state.loading && (
+                {this.props.loading && (
                   <span className="spinner-border spinner-border-sm"></span>
                 )}
                 <span>Login</span>
               </button>
             </div>
 
-            {this.state.message && (
+            {this.props.error && (
               <div className="form-group">
                 <div className="alert alert-danger" role="alert">
-                  {this.state.message}
+                  {this.props.error}
                 </div>
               </div>
             )}
@@ -150,3 +127,19 @@ export default class Login extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+    return {
+        currentUser: state.currentUser,
+        error: state.error,
+        loading: state.loading
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        loginUser: user => dispatch(loginUser(user))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
