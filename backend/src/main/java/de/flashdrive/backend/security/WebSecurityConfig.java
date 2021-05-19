@@ -68,7 +68,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .antMatchers(HttpMethod.POST, SIGN_IN_URL).permitAll()
-                .antMatchers(HttpMethod.POST, "/api/single/upload/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/upload/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/download/**").permitAll()
                 //.antMatchers(HttpMethod.GET, "/user/{id}").authenticated()
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
