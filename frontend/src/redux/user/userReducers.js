@@ -1,6 +1,6 @@
 import { 
     FETCH_USER_REQUEST, FETCH_USER_SUCCESS, FETCH_USER_FAILURE,
-    LOGIN_USER_FAILURE, LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS 
+    LOGIN_USER_FAILURE, LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGOUT_USER 
 } from './userActionTypes';
 
 const initialState = {
@@ -42,6 +42,12 @@ export const userReducer = (state=initialState, action) => {
             loading: false,
             currentUser: [],
             error: action.payload
+        }
+
+        case LOGOUT_USER: return {
+            loading: false,
+            currentUser: [],
+            error: ''
         }
 
         default: return state

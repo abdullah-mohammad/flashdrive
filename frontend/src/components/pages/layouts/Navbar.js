@@ -13,8 +13,13 @@ export default function Navbar() {
         }
     }, [])
 
+    const logOut = () => {
+        AuthService.logout();
+        setCurrentUser(undefined);
+    }
+
     return (
-        <div>
+        <div id="App-Navbar">
             {/* Navigation */}
             <nav className="navbar navbar-expand-lg fixed-top navbar-light">
                 <div className="container">
@@ -23,7 +28,7 @@ export default function Navbar() {
 
                     {/* Image Logo */}
                     <Link to="/" className="navbar-brand logo-image">
-                        <img src="assets/images/logo.svg" alt="alternative" />
+                        <img src="/assets/images/logo.svg" alt="alternative" />
                         <span className="navbar-brand logo-text">FlashDrive</span>
                     </Link>
 
@@ -40,7 +45,7 @@ export default function Navbar() {
                                 </Link>
                             </li>
                             <li className="nav-item dropdown">
-                                <a className="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Our Services</a>
+                                <a className="nav-link dropdown-toggle" href="/#" id="dropdown01" data-toggle="dropdown" /* aria-haspopup="true" */ aria-expanded="false">Our Services</a>
                                 <div className="dropdown-menu" aria-labelledby="dropdown01">
                                     <Link className="dropdown-item page-scroll" to="/flashdrive-storage">FlashDrive Storage</Link>
                                     <div className="dropdown-divider"></div>
@@ -60,8 +65,8 @@ export default function Navbar() {
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="/logout" className="nav-link">
-                                            Log Out
+                                        <Link to="/" className="nav-link text-warning" onClick={logOut}>
+                                            <i className="fa fa-power-off"></i> &nbsp; Log Out
                                         </Link>
                                     </li>
                                 </>
@@ -69,7 +74,7 @@ export default function Navbar() {
                                 <>
                                     <li className="nav-item">
                                         {/* <a className="nav-link page-scroll" href="#features">Sign In</a> */}
-                                        <Link to="/login" className="nav-link">
+                                        <Link id="login-link" to="/login" className="nav-link">
                                             Sign In
                                         </Link>
                                     </li>
@@ -86,9 +91,6 @@ export default function Navbar() {
                 </div> {/* end of container */}
             </nav>
             {/* end of navigation */}
-
-
-
         </div>
     )
 }

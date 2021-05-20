@@ -49,7 +49,7 @@ class Login extends Component {
     if (this.checkBtn.context._errors.length === 0) {
         this.props.loginUser({username: this.state.username, password: this.state.password}).then(
             () => {
-                this.props.history.push("/profile");
+                this.props.history.push("/dashboard");
                 window.location.reload();
             }
         )

@@ -1,8 +1,8 @@
 import { 
     FETCH_USER_REQUEST, FETCH_USER_SUCCESS, FETCH_USER_FAILURE, 
-    LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGIN_USER_FAILURE 
+    LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGIN_USER_FAILURE, 
+    LOGOUT_USER 
 } from './userActionTypes';
-import axios from 'axios';
 import authService from '../../services/auth.service';
 
 export const fetchUserRequest = () => {
@@ -46,6 +46,15 @@ export const loginUserFailure = error => {
     return {
         type: LOGIN_USER_FAILURE,
         payload: error
+    }
+}
+
+/**
+ * LOGOUT ACTION 
+ */
+ export const logoutUser = () => {
+    return {
+        type: LOGOUT_USER
     }
 }
 
