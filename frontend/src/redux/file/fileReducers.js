@@ -3,12 +3,6 @@ import { FETCH_FILE_FAILURE, FETCH_FILE_REQUEST, FETCH_FILE_SUCCESS } from "./fi
 const initialState = {
     loading: false,
     files: [
-        {
-            name: 'UX Resource',
-            type: '',
-            path: '',
-            
-        }
     ],
     error: ''
 }

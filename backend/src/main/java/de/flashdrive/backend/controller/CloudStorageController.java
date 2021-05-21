@@ -63,7 +63,7 @@ public class CloudStorageController {
     @GetMapping("/all/{username}")
     public ResponseEntity<?> getFileList(@PathVariable("username") String username) {
         try {
-            List<String> list = cloudStorageService.getAll(username, "");
+            List<Map<String, String>> list = cloudStorageService.getAll(username);
             return new ResponseEntity<>(list, HttpStatus.OK);
         } catch (Exception e) {
             //return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

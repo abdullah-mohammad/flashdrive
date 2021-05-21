@@ -44,3 +44,21 @@ export const uploadFile = file => {
         );
     }
 }
+
+
+export const getAllFiles = username => {
+    return function(dispatch) {
+        dispatch(fetchFileRequest())
+        return fileService.getFiles(username).then(
+            res => {
+                console.log("RESPONSE: ", res.data)
+                dispatch(fetchFileSuccess(res))
+                return Promise.resolve(res);
+            },
+            error => {
+                dispatch(fetchFileFailure(error.message))
+                return Promise.reject(error);
+            }
+        );
+    }
+}

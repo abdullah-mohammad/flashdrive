@@ -75,16 +75,16 @@ public class CloudStorageService {
         return blob.delete();
     }
 
-    public List<String> getAll(String username) {
+    public List<Map<String, String>> getAll(String username) {
 
-        List<String> list = new ArrayList<>();
+        List<Map<String, String>> list = new ArrayList<>();
 
         String bucketName = "flashdrive-" + username + "-bucket";
 
         Page<Blob> blobs = storage.list(bucketName ,Storage.BlobListOption.currentDirectory());
 
         for (Blob blob : blobs.iterateAll()) {
-/*            System.out.println("\n\n\nUser metadata:");
+            System.out.println("\n\n\nUser metadata:");
 
             System.out.println("Bucket: " + blob.getBucket());
             System.out.println("CacheControl: " + blob.getCacheControl());
@@ -104,8 +104,18 @@ public class CloudStorageService {
             System.out.println("Size: " + blob.getSize());
             System.out.println("StorageClass: " + blob.getStorageClass());
             System.out.println("TimeCreated: " + new Date(blob.getCreateTime()));
-            System.out.println("Last Metadata Update: " + new Date(blob.getUpdateTime()));*/
-            list.add(blob.getName());
+            System.out.println("Last Metadata Update: " + new Date(blob.getUpdateTime()));
+
+            Map<String, String> map = new HashMap<>();
+            map.put("name", blob.getName());
+            map.put("size", blob.getSize().toString());
+            map.put("type", blob.getContentType());
+            map.put("create_date", blob.getCreateTime().toString());
+            map.put("id", blob.getBlobId().toString());
+            map.put("component_count", blob.getComponentCount().toString());
+            map.put("name", blob.getName());
+
+            list.add(map);
         }
         return list;
     }

@@ -12,7 +12,7 @@ class FileService {
     }
 
     getFiles(username) {
-        return axios.get(`${API_URL}/all/${username}`);
+        return axios.get(`${API_URL}all/${username}`);
     }
 
 }

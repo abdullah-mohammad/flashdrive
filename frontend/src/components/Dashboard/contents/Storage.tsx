@@ -11,9 +11,11 @@ import { ChonkyIconFA } from 'chonky-icon-fontawesome';
 
 import DemoFsMap from './demos/demo.fs_map.json';
 import { showActionNotification } from './util';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllFiles } from '../../../redux/file/fileActions';
+import authService from '../../../services/auth.service';
 
 setChonkyDefaults({ iconComponent: ChonkyIconFA,  });
-
 
 // We define a custom interface for file data because we want to add some custom fields
 // to Chonky's built-in `FileData` interface.
@@ -349,6 +351,17 @@ export default function Storage() {
         }, 2000);
     }, [files]) */
 
+
+    const filess = useSelector(state => state)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(getAllFiles(authService.getCurrentUser().username))
+
+        setTimeout(() => {
+            console.log("OOOO: ", filess)
+        }, 2000);
+    }, [])
 
 
     return (
