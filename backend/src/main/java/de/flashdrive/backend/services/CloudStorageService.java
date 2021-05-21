@@ -1,60 +1,26 @@
 package de.flashdrive.backend.services;
 
-import com.google.api.client.http.AbstractInputStreamContent;
 import com.google.api.gax.paging.Page;
-import com.google.api.gax.rpc.NotFoundException;
-import com.google.api.services.storage.model.StorageObject;
 import com.google.auth.Credentials;
-import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.Identity;
+import com.google.cloud.Policy;
 import com.google.cloud.storage.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.core.env.Environment;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CloudStorageService {
 
-    Credentials credentials;
     Storage storage;
-    @Autowired
-    ResourceLoader resourceLoader;
+    String projectId = "flashdrive-311519";
 
-    /*public CloudStorageService() {
-        //System.out.println("=========== "+resourceLoader.getResource("flashdrive-311519-bc4b841c158e.json").getFilename());
-        System.out.println("MAL SCHAUEM!");
-        try {
-            *//*credentials = GoogleCredentials
-                    .fromStream(new FileInputStream("/Users/venancekonan/Documents/STUDIUM/HAW/Semester_5/Kurse/CloudComputing/Praktikum/flashdrive/backend/src/main/resources/flashdrive-311519-bc4b841c158e.json"));*//*
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 
     public CloudStorageService() {
-        //System.out.println("OK");
-        //System.out.println("=========== "+resourceLoader.getResource("flashdrive-311519-bc4b841c158e.json").getFilename());
         try {
-            credentials = GoogleCredentials.fromStream(new FileInputStream("E:\\HAW\\SEMESTER-5\\SE in Cloud\\flashdrive\\backend\\src\\main\\resources\\flashdrive-311519-bc4b841c158e.json"));
-            //.fromStream(new FileInputStream("/Users/venancekonan/Documents/STUDIUM/HAW/Semester_5/Kurse/CloudComputing/Praktikum/flashdrive/backend/src/main/resources/flashdrive-311519-bc4b841c158e.json"));
-
-            storage = StorageOptions.newBuilder().setCredentials(credentials).setProjectId("flashdrive-311519").build().getService();
+            storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
         } catch (
                 Exception e) {
             //e.printStackTrace();
@@ -65,18 +31,27 @@ public class CloudStorageService {
 
     public void createBucket(String username) {
         try {
-            Bucket bucket = storage.create(BucketInfo.of("flashdrive-" + username + "-bucket"));
+            String bucketName = "flashdrive-" + username + "-bucket";
+            Bucket bucket = storage.create(BucketInfo.of(bucketName));
+            Policy originalPolicy = storage.getIamPolicy(bucketName);
+            storage.setIamPolicy(
+                    bucketName,
+                    originalPolicy
+                            .toBuilder()
+                            .addIdentity(StorageRoles.objectAdmin(), Identity.allAuthenticatedUsers()) // All auth-users can read & write on objects
+                            .build());
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
     }
 
-    public List<String> upload(String bucketName, List<MultipartFile> files) {
+    public List<String> upload(String username, List<MultipartFile> files) {
         try {
             List<String> mediaLinks = new ArrayList<>();
+            String bucketName = "flashdrive-" + username + "-bucket";
             for (MultipartFile file : files) {
                 BlobInfo blobInfo = storage.create(
-                        BlobInfo.newBuilder("flashdrive-" + bucketName + "-bucket", file.getOriginalFilename()).build(), //get original file name
+                        BlobInfo.newBuilder(bucketName, file.getOriginalFilename()).setContentType(file.getContentType()).build(), // get original file name
                         file.getBytes(), // the file
                         Storage.BlobTargetOption.predefinedAcl(Storage.PredefinedAcl.PUBLIC_READ) // Set file permission
                 );
@@ -89,42 +64,65 @@ public class CloudStorageService {
         }
     }
 
-    public Blob download(String bucketName, String fileName) {
+    public Blob download(String username, String fileName) {
 
-        try{
-            Blob blob = storage.get(BlobId.of("flashdrive-" + bucketName + "-bucket", fileName));
+        try {
+            String bucketName = "flashdrive-" + username + "-bucket";
+            Blob blob = storage.get(BlobId.of(bucketName, fileName));
             return blob;
-        }catch (Exception e){
+        } catch (Exception e) {
             System.err.println(e.getMessage());
             return null;
         }
-
-
-        /* https://medium.com/teamarimac/file-upload-and-download-with-spring-boot-firebase-af068bc62614
-        String destFileName = UUID.randomUUID().toString().concat(this.getExtension(fileName));     // to set random strinh for destination file name
-        String destFilePath = "Z:\\New folder\\" + destFileName;                                    // to set destination file path
-
-        ////////////////////////////////   Download  ////////////////////////////////////////////////////////////////////////
-        Credentials credentials = GoogleCredentials.fromStream(new FileInputStream("path of JSON with genarated private key"));
-        Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
-        Blob blob = storage.get(BlobId.of("your bucket name", fileName));
-        blob.downloadTo(Paths.get(destFilePath));
-        return sendResponse("200", "Successfully Downloaded!");*/
     }
 
-    public boolean delete(String bucketName, String fileName)
-    {
-        Blob blob = storage.get(BlobId.of("flashdrive-" + bucketName + "-bucket", fileName));
+    public boolean delete(String username, String fileName) {
+        String bucketName = "flashdrive-" + username + "-bucket";
+        Blob blob = storage.get(BlobId.of(bucketName, fileName));
         return blob.delete();
     }
 
-    public List<String>  getAll(String bucketName) {
+    public List<Map<String, String>> getAll(String username) {
 
-        Page<Blob> blobPage = storage.list("flashdrive-" + bucketName + "-bucket");
-        List<String> list = new ArrayList<>();
+        List<Map<String, String>> list = new ArrayList<>();
 
-        for (Blob o:blobPage.iterateAll()) {
-            list.add(o.getName());
+        String bucketName = "flashdrive-" + username + "-bucket";
+
+        Page<Blob> blobs = storage.list(bucketName ,Storage.BlobListOption.currentDirectory());
+
+        for (Blob blob : blobs.iterateAll()) {
+            System.out.println("\n\n\nUser metadata:");
+
+            System.out.println("Bucket: " + blob.getBucket());
+            System.out.println("CacheControl: " + blob.getCacheControl());
+            System.out.println("ComponentCount: " + blob.getComponentCount());
+            System.out.println("ContentDisposition: " + blob.getContentDisposition());
+            System.out.println("ContentEncoding: " + blob.getContentEncoding());
+            System.out.println("ContentLanguage: " + blob.getContentLanguage());
+            System.out.println("ContentType: " + blob.getContentType());
+            System.out.println("Crc32c: " + blob.getCrc32c());
+            System.out.println("ETag: " + blob.getEtag());
+            System.out.println("Generation: " + blob.getGeneration());
+            System.out.println("Id: " + blob.getBlobId());
+            System.out.println("Md5Hash: " + blob.getMd5());
+            System.out.println("MediaLink: " + blob.getMediaLink());
+            System.out.println("Metageneration: " + blob.getMetageneration());
+            System.out.println("Name: " + blob.getName());
+            System.out.println("Size: " + blob.getSize());
+            System.out.println("StorageClass: " + blob.getStorageClass());
+            System.out.println("TimeCreated: " + new Date(blob.getCreateTime()));
+            System.out.println("Last Metadata Update: " + new Date(blob.getUpdateTime()));
+
+            Map<String, String> map = new HashMap<>();
+            map.put("name", blob.getName());
+            map.put("size", blob.getSize().toString());
+            map.put("type", blob.getContentType());
+            map.put("create_date", blob.getCreateTime().toString());
+            map.put("id", blob.getBlobId().toString());
+            map.put("component_count", blob.getComponentCount().toString());
+            map.put("name", blob.getName());
+
+            list.add(map);
         }
         return list;
     }

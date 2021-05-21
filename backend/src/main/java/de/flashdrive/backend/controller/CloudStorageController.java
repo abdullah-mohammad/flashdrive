@@ -12,7 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api")
 @RestController
 public class CloudStorageController {
@@ -24,7 +26,6 @@ public class CloudStorageController {
     public ResponseEntity<?> uploadFile(@RequestParam("username") String bucketName, @RequestParam("file") List<MultipartFile> file) {
         try {
             List<String> mediaLinks = cloudStorageService.upload(bucketName, file);
-
             return new ResponseEntity<>(mediaLinks, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: upload error!"));
@@ -62,7 +63,7 @@ public class CloudStorageController {
     @GetMapping("/all/{username}")
     public ResponseEntity<?> getFileList(@PathVariable("username") String username) {
         try {
-            List<String> list = cloudStorageService.getAll(username);
+            List<Map<String, String>> list = cloudStorageService.getAll(username);
             return new ResponseEntity<>(list, HttpStatus.OK);
         } catch (Exception e) {
             //return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
