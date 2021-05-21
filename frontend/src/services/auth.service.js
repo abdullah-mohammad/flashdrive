@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/auth/";
+//const API_URL = "http://localhost:8080/api/auth/";
 //const API_URL = "http://34.95.118.127//api/auth/";
-//const API_URL = "http://34.117.49.181/api/auth/";
+const API_URL = "http://34.117.49.181/api/auth/";
 //const API_URL = "http://flashdrive-cloud.de/api/auth/";
 
 class AuthService {
