@@ -51,7 +51,7 @@ public class CloudStorageService {
         //System.out.println("OK");
         //System.out.println("=========== "+resourceLoader.getResource("flashdrive-311519-bc4b841c158e.json").getFilename());
         try {
-            credentials = GoogleCredentials.fromStream(new FileInputStream("../../flashdrive-311519-bc4b841c158e.json"));
+            credentials = GoogleCredentials.fromStream(new FileInputStream("E:\\HAW\\SEMESTER-5\\SE in Cloud\\flashdrive\\backend\\src\\main\\resources\\flashdrive-311519-bc4b841c158e.json"));
             //.fromStream(new FileInputStream("/Users/venancekonan/Documents/STUDIUM/HAW/Semester_5/Kurse/CloudComputing/Praktikum/flashdrive/backend/src/main/resources/flashdrive-311519-bc4b841c158e.json"));
 
             storage = StorageOptions.newBuilder().setCredentials(credentials).setProjectId("flashdrive-311519").build().getService();
