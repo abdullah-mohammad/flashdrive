@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, Route, Switch } from 'react-router-dom'
 import authService from '../../services/auth.service'
 import Storage from './contents/Storage'
+import SpeechToText from './contents/speech-to-text'
 import { DASHBOARD_BASE_URL } from './dashboardBaseUrl'
 
 export default function Dashboard() {
@@ -47,7 +48,7 @@ export default function Dashboard() {
 
                         <Switch>
                             <Route exact path={`${DASHBOARD_BASE_URL}/storage`} component={Storage} />
-                            {/* <Route exact path={`${DASHBOARD_BASE_URL}/speech-to-text`} component={Login} /> */}
+                            <Route exact path={`${DASHBOARD_BASE_URL}/speech-to-text`} component={SpeechToText} />
                         </Switch>
 
 
