@@ -66,7 +66,7 @@ public class CloudStorageService {
         return blob.delete();
     }
 
-    public List<String> getAll(String username ,String currentDir) {
+    public List<String> getAll(String username) {
 
         List<String> list = new ArrayList<>();
 

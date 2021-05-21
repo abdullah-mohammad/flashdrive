@@ -4,11 +4,14 @@ import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ResponseObserver;
 import com.google.api.gax.rpc.StreamController;
-import com.google.cloud.speech.v1.*;
+//import com.google.cloud.speech.v1.*;
+import com.google.cloud.speech.v1p1beta1.*;
 import com.google.protobuf.ByteString;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.sound.sampled.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,13 +114,50 @@ public class SpeechToTextService {
 
     public String convertSpeechToText(String username,String filename) throws Exception {
         try (SpeechClient client = SpeechClient.create()) {
-            RecognitionConfig.Builder builder = RecognitionConfig.newBuilder().setEncoding(RecognitionConfig.AudioEncoding.FLAC)
+            RecognitionConfig.Builder builder = RecognitionConfig.newBuilder().setSampleRateHertz(16000).setEncoding(RecognitionConfig.AudioEncoding.MP3)
                     .setLanguageCode("en-US").setEnableAutomaticPunctuation(true).setEnableWordTimeOffsets(true).setAudioChannelCount(2);
             builder.setModel("default");
 
             RecognitionConfig config = builder.build();
 
             RecognitionAudio audio = RecognitionAudio.newBuilder().setUri("gs://flashdrive-"+username+"-bucket/"+filename).build();
+
+            OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response = client.longRunningRecognizeAsync(config, audio);
+
+            while (!response.isDone()) {
+                Thread.sleep(10000);
+            }
+
+            List<SpeechRecognitionResult> speechResults = response.get().getResultsList();
+
+            StringBuilder transcription = new StringBuilder();
+            for (SpeechRecognitionResult result : speechResults) {
+                SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
+                transcription.append(alternative.getTranscript());
+            }
+            return transcription.toString();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+            return null;
+        }
+    }
+
+    public String audioFileToText(String file) throws Exception {
+
+        try (SpeechClient client = SpeechClient.create()) {
+            RecognitionConfig.Builder builder = RecognitionConfig.newBuilder()
+                    .setEncoding(RecognitionConfig.AudioEncoding.MP3)
+                    .setLanguageCode("de-DE")
+                    .setSampleRateHertz(16000)
+                    .setEnableAutomaticPunctuation(true)
+                    .setEnableWordTimeOffsets(true)
+                    .setAudioChannelCount(2);
+
+            builder.setModel("default");
+
+            RecognitionConfig config = builder.build();
+
+            RecognitionAudio audio = RecognitionAudio.newBuilder().setUri("gs://flashdrive-user8-bucket/blob")/*.setContent(ByteString.copyFrom(file.getBytes()))*/.build();
 
             OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response = client.longRunningRecognizeAsync(config, audio);
 
