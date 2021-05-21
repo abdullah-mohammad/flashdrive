@@ -56,29 +56,6 @@ export default class SpeechToText extends Component {
                     />
                   </div>
                 )}
-
-                {url && (
-                  <div className="content-header-wrapper">
-                    <div className="actions">
-                        <label className="btn btn-success">
-                            <button id="my-file-selector" onClick={this._sendAudio} />
-                            convert speech to text
-                        </label>
-                    </div>
-                  </div>
-                )}
-
-                {text && (
-                  <div className="content-header-wrapper">
-                    <div className="actions">
-                        <label className="btn btn-success">
-                            <button id="my-file-selector" onClick={this._sendAudio}>
-                            {this.text}
-                            </button>
-                        </label>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -125,16 +102,5 @@ export default class SpeechToText extends Component {
         }
     
         this.setState({ url: null })
-      }
-
-      _sendAudio = () => {
-        if (this.state.url) {
-          
-        }
-        var str = SpeechService.convertSpeechToText(this.state.url)
-        this.text = 'test'
-        this.setState({
-          text: str
-        })
       }
 }
