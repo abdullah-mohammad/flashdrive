@@ -2,6 +2,8 @@ package de.flashdrive.backend.services;
 
 import com.google.api.gax.paging.Page;
 import com.google.auth.Credentials;
+import com.google.cloud.Identity;
+import com.google.cloud.Policy;
 import com.google.cloud.storage.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +26,13 @@ public class CloudStorageService {
         try {
             String bucketName = "flashdrive-" + username + "-bucket";
             Bucket bucket = storage.create(BucketInfo.of(bucketName));
+            Policy originalPolicy = storage.getIamPolicy(bucketName);
+            storage.setIamPolicy(
+                    bucketName,
+                    originalPolicy
+                            .toBuilder()
+                            .addIdentity(StorageRoles.objectAdmin(), Identity.allAuthenticatedUsers()) // All auth-users can read & write on objects
+                            .build());
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
@@ -35,7 +44,7 @@ public class CloudStorageService {
             String bucketName = "flashdrive-" + username + "-bucket";
             for (MultipartFile file : files) {
                 BlobInfo blobInfo = storage.create(
-                        BlobInfo.newBuilder(bucketName, file.getOriginalFilename()).build(), //get original file name
+                        BlobInfo.newBuilder(bucketName, file.getOriginalFilename()).setContentType(file.getContentType()).build(), // get original file name
                         file.getBytes(), // the file
                         Storage.BlobTargetOption.predefinedAcl(Storage.PredefinedAcl.PUBLIC_READ) // Set file permission
                 );

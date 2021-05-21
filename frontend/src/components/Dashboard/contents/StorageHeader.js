@@ -1,13 +1,23 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { uploadFile } from '../../../redux/file/fileActions'
 
 export default function StorageHeader() {
+    const dispatch = useDispatch()
+
+    const onUploadFile = e => {
+        if (e.target.files[0] != null) {
+            dispatch(uploadFile(e.target.files[0]))
+        }
+    }
+
     return (
         <div>
             <div className="content-header-wrapper">
                 <h2 className="title">My FlashDrive</h2>
                 <div className="actions">
-                    <label class="btn btn-success">
-                        <input id="my-file-selector" type="file" class="d-none" />
+                    <label className="btn btn-success">
+                        <input onChange={onUploadFile} id="my-file-selector" type="file" className="d-none" />
                         <i className="fa fa-plus"></i> Upload new file
                     </label>
                 </div>

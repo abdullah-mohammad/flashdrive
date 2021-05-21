@@ -1,5 +1,6 @@
 import { FETCH_FILE_FAILURE, FETCH_FILE_REQUEST, FETCH_FILE_SUCCESS } from './fileActionTypes';
 import authService from '../../services/auth.service';
+import fileService from '../../services/file.service';
 
 export const fetchFileRequest = () => {
     return {
@@ -22,18 +23,24 @@ export const fetchFileFailure = error => {
 }
 
 // pure function
-/* export const loginFile = user => {
+export const uploadFile = file => {
     return function(dispatch) {
-        dispatch(loginFileRequest())
-        return authService.login(user.username, user.password).then(
+        dispatch(fetchFileRequest())
+        const bucketName = authService.getCurrentUser().username
+        var data = new FormData();
+        data.append("username", bucketName.toLowerCase());
+        data.append("file", file);
+        console.log("HOWER; ", data.username)
+        return fileService.uploadFile(data).then(
             res => {
-                dispatch(loginFileSuccess(res))
+                console.log("RESPONSE: ", res.data)
+                dispatch(fetchFileSuccess(res))
                 return Promise.resolve(res);
             },
             error => {
-                dispatch(loginFileFailure(error.message))
+                dispatch(fetchFileFailure(error.message))
                 return Promise.reject(error);
             }
         );
     }
-} */
+}

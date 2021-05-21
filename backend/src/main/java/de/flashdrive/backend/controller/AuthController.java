@@ -98,7 +98,7 @@ public class AuthController {
                 "");
         try {
             userRepository.save(user);
-            cloudStorageService.createBucket(user.getUsername());
+            cloudStorageService.createBucket(user.getUsername().toLowerCase());
 
         } catch (Exception e) {
             return ResponseEntity.badRequest()

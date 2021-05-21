@@ -5,8 +5,9 @@ const initialState = {
     files: [
         {
             name: 'UX Resource',
-            type: ''
-
+            type: '',
+            path: '',
+            
         }
     ],
     error: ''

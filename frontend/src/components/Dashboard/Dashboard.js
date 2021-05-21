@@ -1,9 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, Route, Switch } from 'react-router-dom'
+import authService from '../../services/auth.service'
 import Storage from './contents/Storage'
 import { DASHBOARD_BASE_URL } from './dashboardBaseUrl'
 
 export default function Dashboard() {
+
+    const [currentUser, setCurrentUser] = useState(undefined)
+
+    useEffect(() => {
+        const user = authService.getCurrentUser();
+        if (user) {
+            setCurrentUser(user)
+        }
+    }, [])
+
+
     return (
         <div className="container">
             <div className="view-account">
