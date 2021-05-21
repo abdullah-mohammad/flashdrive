@@ -56,6 +56,13 @@ export default class SpeechToText extends Component {
                     />
                   </div>
                 )}
+
+                {text && (
+                  <div>
+                    <p>{text}</p>
+                  </div>
+                )}
+
               </div>
             </div>
           </div>
@@ -85,7 +92,9 @@ export default class SpeechToText extends Component {
           SpeechService.convertSpeechToText(formData).then(
             (res) => {
               console.log(res.data)
-              console.log(res.status)
+              this.setState({
+                text: res.data
+              })
             }
         ).catch(
           (err)=>{
