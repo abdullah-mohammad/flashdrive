@@ -1,16 +1,17 @@
 package de.flashdrive.backend.controller;
 
-import com.google.cloud.storage.Blob;
 import de.flashdrive.backend.security.jwt.MessageResponse;
 import de.flashdrive.backend.services.CloudStorageService;
+import de.flashdrive.backend.services.MimeTypes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,26 +39,23 @@ public class CloudStorageController {
     )
     public ResponseEntity<?> getFile(@PathVariable("username") String username,
                                      @PathVariable("filename") String filename,
-                                     @RequestParam(value = "path",required = false) String path
-    ) {
+                                     @RequestParam(value = "path", required = false) String path) {
 
-        try {
-            if (path == null)
-                path = "";
+        if (path == null)
+            path = "";
+        byte[] res = cloudStorageService.download(username, path + filename);
+        if (res != null) {
+            ByteArrayResource resource = new ByteArrayResource(res);
 
-            String home = System.getProperty("user.home");
-            String destFilePath = home + "/Downloads/" + filename; // to set destination file path
-            Blob blob = cloudStorageService.download(username, path + filename);
+            String contentTyp = MimeTypes.getMimeType(filename.split("\\.")[1]);
 
-            if(blob == null){
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            blob.downloadTo(Paths.get(destFilePath));
-
-            return new ResponseEntity<>(HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.ok()
+                    .contentLength(res.length)
+                    .header("Content-type", contentTyp)
+                    .header("Content-disposition", "attachment; filename=\"" + path + "\"").body(resource);
         }
+        return ResponseEntity.badRequest().body(new MessageResponse("Error: download error!"));
+
     }
 
     @GetMapping("/all/{username}")
@@ -66,7 +64,6 @@ public class CloudStorageController {
             List<Map<String, String>> list = cloudStorageService.getAll(username);
             return new ResponseEntity<>(list, HttpStatus.OK);
         } catch (Exception e) {
-            //return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
@@ -76,6 +73,34 @@ public class CloudStorageController {
         if (cloudStorageService.delete(username, filename)) {
             return ResponseEntity.ok(new MessageResponse("File deleted successfully!"));
         }
-        return ResponseEntity.badRequest().body(new MessageResponse("Error: download error!"));
+        return ResponseEntity.badRequest().body(new MessageResponse("Error: delete error!"));
+    }
+
+    @PostMapping(value = "/filter")
+    public ResponseEntity<?> filterItemList(@RequestBody Map<String, String> filter) {
+        try {
+            String username = filter.get("username");
+            String name = filter.get("name");
+            String type = filter.get("type");
+            String date = filter.get("date");
+
+            List<Map<String, String>> list = new ArrayList<>();
+            if (!username.isEmpty()) {
+
+                list = cloudStorageService.filterBlobsBy(username, name, type, date);
+
+            } else {
+                return ResponseEntity.badRequest().body(new MessageResponse("Error: username should not be empty"));
+            }
+
+            if (list.isEmpty()) {
+                return ResponseEntity.badRequest().body(new MessageResponse("No match"));
+            }
+
+            return new ResponseEntity<>(list, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: wrong username"));
+        }
     }
 }
