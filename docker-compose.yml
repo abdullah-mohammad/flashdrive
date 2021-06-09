@@ -11,7 +11,8 @@ services:
     #   dockerfile: Dockerfile
     # Configuration for building the docker image for the backend service
     build: ./backend
-    image: gcr.io/flashdrive-311519/flashdrive_backend:latest
+    #image: gcr.io/flashdrive-311519/flashdrive_backend:latest
+    image: flashdriveContainerRegistry.azurecr.io/flashdrive_backend
     # ports:
     #   - "9090:8080" # Forward the exposed port 8080 on the container to port 9090 on the host machine
     restart: always     
@@ -22,7 +23,8 @@ services:
 #  Frontend Service 
   frontend:
     build: ./frontend
-    image: gcr.io/flashdrive-311519/flashdrive_frontend:latest
+    #image: gcr.io/flashdrive-311519/flashdrive_frontend:latest
+    image: flashdriveContainerRegistry.azurecr.io/flashdrive_frontend
     ports:
       - "5000:80" # Map the exposed port 80 on the container to port 5000 on the host machine
     restart: always
