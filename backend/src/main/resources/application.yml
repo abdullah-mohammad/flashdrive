@@ -4,3 +4,8 @@ spring:
     username: root
     password: fdb
     #driver-class-name: com.mysql.jdbc.Driver
+
+azure:
+  storage:
+    connection-string: ${AZURE_STORAGE_CONNECTION_STRING}
+    container-name: ${AZURE_STORAGE_CONTAINER_NAME}

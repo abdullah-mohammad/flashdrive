@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +22,12 @@ public class SpeechToTextService {
 
     // [START speech_transcribe_streaming_mic]
     /** Performs microphone streaming speech recognition with a duration of 1 minute. */
-    public String streamingMicRecognize() throws Exception {
+    public String streamingMicRecognize() {
         StringBuilder resultText = new StringBuilder();
         ResponseObserver<StreamingRecognizeResponse> responseObserver = null;
         try (SpeechClient client = SpeechClient.create()) {
 
-            responseObserver =
-                    new ResponseObserver<StreamingRecognizeResponse>() {
+            responseObserver = new ResponseObserver<StreamingRecognizeResponse>() {
                         ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
 
                         public void onStart(StreamController controller) {}
@@ -40,7 +40,6 @@ public class SpeechToTextService {
                             for (StreamingRecognizeResponse response : responses) {
                                 StreamingRecognitionResult result = response.getResultsList().get(0);
                                 SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-                                //System.out.printf("Transcript : %s\n", alternative.getTranscript());
                                 resultText.append(alternative.getTranscript());
                             }
                         }
@@ -68,8 +67,7 @@ public class SpeechToTextService {
                             .build(); // The first request in a streaming call has to be a config
 
             clientStream.send(request);
-            // SampleRate:16000Hz, SampleSizeInBits: 16, Number of channels: 1, Signed: true,
-            // bigEndian: false
+
             AudioFormat audioFormat = new AudioFormat(16000, 16, 1, true, false);
             DataLine.Info targetInfo =
                     new DataLine.Info(
@@ -115,7 +113,7 @@ public class SpeechToTextService {
     public String convertSpeechToText(String username,String filename) throws Exception {
         try (SpeechClient client = SpeechClient.create()) {
             RecognitionConfig.Builder builder = RecognitionConfig.newBuilder().setSampleRateHertz(16000).setEncoding(RecognitionConfig.AudioEncoding.MP3)
-                    .setLanguageCode("en-US").setEnableAutomaticPunctuation(true).setEnableWordTimeOffsets(true).setAudioChannelCount(2);
+                    .setLanguageCode("de-DE").setEnableAutomaticPunctuation(true).setEnableWordTimeOffsets(true).setAudioChannelCount(2);
             builder.setModel("default");
 
             RecognitionConfig config = builder.build();
@@ -142,7 +140,7 @@ public class SpeechToTextService {
         }
     }
 
-    public String audioFileToText(String file) throws Exception {
+    public String audioFileToText(InputStream stream) throws Exception {
 
         try (SpeechClient client = SpeechClient.create()) {
             RecognitionConfig.Builder builder = RecognitionConfig.newBuilder()
@@ -157,7 +155,7 @@ public class SpeechToTextService {
 
             RecognitionConfig config = builder.build();
 
-            RecognitionAudio audio = RecognitionAudio.newBuilder().setUri("gs://flashdrive-user8-bucket/blob")/*.setContent(ByteString.copyFrom(file.getBytes()))*/.build();
+            RecognitionAudio audio = RecognitionAudio.newBuilder().setContent(ByteString.readFrom(stream)).build();
 
             OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response = client.longRunningRecognizeAsync(config, audio);
 
