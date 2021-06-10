@@ -29,3 +29,28 @@ Run the docker image:
 Navigate to the url in your browser:
 
     http://localhost:8080
+
+---
+
+# Manual Workflow for deployment to AKS
+
+`cd azure_devops`
+
+`docker-compose up -d `
+
+`docker-compose push`
+
+`kubectl delete service backend --ignore-not-found=true`
+
+`kubectl delete service frontend --ignore-not-found=true`
+
+`kubectl delete deployment backend --ignore-not-found=true`
+
+`kubectl delete deployment frontend --ignore-not-found=true`
+
+`kubectl apply -f frontend.yaml`
+
+`kubectl apply -f backend.yaml`
+
+`kubectl apply -f ingress-resource.yaml`
+
