@@ -53,7 +53,6 @@ export default function StandardPage() {
       }) */
   })
 
-  
   return (
     <div className="App">
         <Navbar />
