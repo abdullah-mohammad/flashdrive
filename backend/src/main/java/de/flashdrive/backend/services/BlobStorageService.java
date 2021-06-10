@@ -55,7 +55,7 @@ public class BlobStorageService {
         ListBlobsOptions listBlobsOptions = new ListBlobsOptions().setDetails(blobListDetails);
         BlobAsyncClient blobAsyncClient = blobServiceAsyncClient.getBlobContainerAsyncClient(containerName).getBlobAsyncClient(file.getOriginalFilename());
 
-        Flux<ByteBuffer> data = Flux.just(ByteBuffer.wrap(file.getResource().getInputStream().readAllBytes()));
+        Flux<ByteBuffer> data = Flux.just(ByteBuffer.wrap(file.getBytes()));
         ParallelTransferOptions parallelTransferOptions = new ParallelTransferOptions(numBuffers, blockSize, null);
         blobAsyncClient.upload(data,parallelTransferOptions, true).block();
     }
