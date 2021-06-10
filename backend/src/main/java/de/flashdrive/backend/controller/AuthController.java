@@ -1,14 +1,8 @@
 package de.flashdrive.backend.controller;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
-import com.google.auth.Credentials;
-import com.google.cloud.storage.Storage;
+import de.flashdrive.backend.models.SuccessfulOperation;
 import de.flashdrive.backend.models.User;
 import de.flashdrive.backend.repository.UserRepository;
 import de.flashdrive.backend.security.LoginRequest;
@@ -16,7 +10,8 @@ import de.flashdrive.backend.security.SignupRequest;
 import de.flashdrive.backend.security.jwt.JwtResponse;
 import de.flashdrive.backend.security.jwt.JwtUtils;
 import de.flashdrive.backend.security.jwt.MessageResponse;
-import de.flashdrive.backend.services.CloudStorageService;
+import de.flashdrive.backend.services.BlobStorageService;
+import de.flashdrive.backend.services.GCPStorageService;
 import de.flashdrive.backend.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,7 +41,10 @@ public class AuthController {
     JwtUtils jwtUtils;
 
     @Autowired
-    CloudStorageService cloudStorageService;
+    GCPStorageService cloudStorageService;
+
+    @Autowired
+    private BlobStorageService blobStorageService;
 
 
     @PostMapping("/signin")
@@ -99,6 +97,10 @@ public class AuthController {
         try {
             userRepository.save(user);
             cloudStorageService.createBucket(user.getUsername().toLowerCase());
+            System.out.println(signUpRequest.getUsername());
+            if (blobStorageService.createContainer(signUpRequest.getUsername())) {
+                return new ResponseEntity(new SuccessfulOperation(), HttpStatus.OK);
+            }
 
         } catch (Exception e) {
             return ResponseEntity.badRequest()
