@@ -24,7 +24,7 @@ spec:
     port: 8080
     targetPort: 8080
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: az-flashdrive-ingress
@@ -35,11 +35,19 @@ spec:
   rules:
   - http:
       paths:
-      - path: /*
+      - path:
+        pathType: Prefix
         backend:
-          serviceName: frontend
-          servicePort: 80
-      - path: /api/*
+          service:
+            name: frontend
+            port:
+              number: 80
+        path: /*
+      - path:
+        pathType: Prefix
         backend:
-          serviceName: backend
-          servicePort: 8080
+          service:
+            name: backend
+            port:
+              number: 8080
+        path: /api/*
