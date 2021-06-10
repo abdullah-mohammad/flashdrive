@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: default
+  labels:
+    app: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: flashdriveContainerRegistry.azurecr.io/flashdrive_backend:latest
+          env:
+            - name: MYSQL_URL
+              value: jdbc:mysql://flashdrive-db-server-test2.mysql.database.azure.com:3306/flashdrive-db?serverTimezone=UTC
+            - name: MYSQL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: az-sql-db-credentials
+                  key: username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: az-sql-db-credentials
+                  key: password
+          ports:
+          - containerPort: 8080
