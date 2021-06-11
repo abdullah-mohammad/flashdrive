@@ -29,7 +29,7 @@ public class SpeechToTextController {
     Credentials credentials;
     Storage storage;
 
-    @Autowired
+   /* @Autowired
     SpeechToTextService speechToTextService;
 
     @Autowired
@@ -102,5 +102,5 @@ public class SpeechToTextController {
         else
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-    }
+    }*/
 }
