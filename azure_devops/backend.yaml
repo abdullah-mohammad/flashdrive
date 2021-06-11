@@ -30,5 +30,15 @@ spec:
                 secretKeyRef:
                   name: az-sql-db-credentials
                   key: password
+            - name: AZURE_STORAGE_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: az-storage-credentials
+                  key: connection
+            - name: AZURE_STORAGE_CONTAINER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: az-storage-credentials
+                  key: container
           ports:
           - containerPort: 8080
