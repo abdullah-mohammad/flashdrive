@@ -52,7 +52,7 @@ public class AzureStorageController {
 
     @GetMapping(value = "/download/{username}/{filename}")
     public @ResponseBody
-    byte[] handleFileDownload(HttpServletResponse response,@PathVariable("username") String username, @PathVariable String fileName) throws IOException {
+    byte[] handleFileDownload(HttpServletResponse response,@PathVariable("username") String username, @PathVariable("filename") String fileName) throws IOException {
         response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
         return blobStorageService.download(username,fileName);
     }
