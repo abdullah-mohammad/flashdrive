@@ -1,12 +1,10 @@
 package de.flashdrive.backend.controller;
 
 import com.google.auth.Credentials;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-import de.flashdrive.backend.services.GCPStorageService;
 import de.flashdrive.backend.services.MimeTypes;
 import de.flashdrive.backend.services.SpeechToTextService;
+import de.flashdrive.backend.services.StorageService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,10 +13,11 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -26,22 +25,19 @@ import java.util.Objects;
 @RequestMapping("/api")
 public class SpeechToTextController {
 
-    Credentials credentials;
-    Storage storage;
-
-   /* @Autowired
+    @Autowired
     SpeechToTextService speechToTextService;
 
     @Autowired
-    GCPStorageService cloudStorageService;
+    StorageService storageService;
 
-    public SpeechToTextController() throws IOException {
-        credentials = GoogleCredentials.fromStream(new FileInputStream("src/main/resources/flashdrive-311519-bc4b841c158e.json"));
-        storage = StorageOptions.newBuilder().setCredentials(credentials).setProjectId("flashdrive-311519").build().getService();
-    }
+    Credentials credentials;
+
+    Storage storage;
+
 
     @PostMapping("/speech")
-    public ResponseEntity<?> convertSpeechToText(@RequestParam("username") String username,@RequestParam("file") MultipartFile file) throws Exception {
+    public ResponseEntity<?> convertSpeechToText(@RequestParam("username") String username, @RequestParam("file") MultipartFile file) throws Exception {
 
         String result="";
 
@@ -54,7 +50,7 @@ public class SpeechToTextController {
         }
 
         if (result != null)
-            return new ResponseEntity<>(result,HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -76,7 +72,7 @@ public class SpeechToTextController {
 
     }
 
-    private void saveTextFile(@PathVariable("username") String username, String result, String fileName) throws IOException {
+    private void saveTextFile(String username, String result, String fileName) throws IOException {
         String textFileName = fileName.split("\\.")[0];
 
         File textFile = Files.createTempFile(textFileName, ".txt").toFile();
@@ -89,7 +85,7 @@ public class SpeechToTextController {
                 textFile.getName(), MimeTypes.getMimeType("txt"),
                 IOUtils.toByteArray(new FileInputStream(textFile)));
 
-        cloudStorageService.upload(username, multipartTextFile);
+        storageService.upload(username, multipartTextFile);
     }
 
     @GetMapping("/speech/mic")
@@ -102,5 +98,5 @@ public class SpeechToTextController {
         else
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-    }*/
+    }
 }

@@ -1,16 +1,16 @@
 package de.flashdrive.backend.controller;
 
-import de.flashdrive.backend.security.jwt.MessageResponse;
-import de.flashdrive.backend.services.GCPStorageService;
-import de.flashdrive.backend.services.MimeTypes;
+import de.flashdrive.backend.response.MessageResponse;
+import de.flashdrive.backend.services.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,50 +18,37 @@ import java.util.Map;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api")
 @RestController
-public class GCPStorageController {
+public class StorageController {
 
     @Autowired
-    private GCPStorageService cloudStorageService;
+    private StorageService storageService;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("username") String username, @RequestParam("file") MultipartFile file) {
-        try {
-            String mediaLinks = cloudStorageService.upload(username, file);
-            return new ResponseEntity<>(mediaLinks, HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: upload error!"));
-        }
+    public ResponseEntity<?> handleFileUpload(@RequestParam("username") String username, @RequestParam("file") MultipartFile file) {
+
+        if (storageService.upload(username, file))
+            return ResponseEntity.ok().body(new MessageResponse("File uploaded successfully!"));
+
+        return ResponseEntity.badRequest().body(new MessageResponse("Error: upload error!"));
     }
 
     @GetMapping(
             value = "/download/{username}/{filename}",
             produces = {MediaType.ALL_VALUE}
     )
-    public ResponseEntity<?> getFile(@PathVariable("username") String username,
-                                     @PathVariable("filename") String filename,
-                                     @RequestParam(value = "path", required = false) String path) {
+    public @ResponseBody byte[] handleFileDownload(HttpServletResponse response,
+                                                   @PathVariable("username") String username,
+                                                   @PathVariable("filename") String fileName,
+                                                   @RequestParam(value = "path", required = false) String path) {
 
-        if (path == null)
-            path = "";
-        byte[] res = cloudStorageService.download(username, path + filename);
-        if (res != null) {
-            ByteArrayResource resource = new ByteArrayResource(res);
-
-            String contentTyp = MimeTypes.getMimeType(filename.split("\\.")[1]);
-
-            return ResponseEntity.ok()
-                    .contentLength(res.length)
-                    .header("Content-type", contentTyp)
-                    .header("Content-disposition", "attachment; filename=\"" + path + "\"").body(resource);
-        }
-        return ResponseEntity.badRequest().body(new MessageResponse("Error: download error!"));
-
+        response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
+        return storageService.download(username,fileName);
     }
 
     @GetMapping("/all/{username}")
-    public ResponseEntity<?> getFileList(@PathVariable("username") String username) {
+    public ResponseEntity<?> getListOfFiles(@PathVariable("username") String username) {
         try {
-            List<Map<String, String>> list = cloudStorageService.getAll(username);
+            List<Map<String, String>> list = storageService.listOfFiles(username);
             return new ResponseEntity<>(list, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
@@ -70,7 +57,7 @@ public class GCPStorageController {
 
     @DeleteMapping("/delete/{username}/{filename:.+}")
     public ResponseEntity<?> deleteFile(@PathVariable("username") String username, @PathVariable("filename") String filename) {
-        if (cloudStorageService.delete(username, filename)) {
+        if (storageService.delete(username, filename)) {
             return ResponseEntity.ok(new MessageResponse("File deleted successfully!"));
         }
         return ResponseEntity.badRequest().body(new MessageResponse("Error: delete error!"));
@@ -87,7 +74,7 @@ public class GCPStorageController {
             List<Map<String, String>> list = new ArrayList<>();
             if (!username.isEmpty()) {
 
-                list = cloudStorageService.filterBlobsBy(username, name, type, date);
+                list = storageService.filter(username, name, type, date);
 
             } else {
                 return ResponseEntity.badRequest().body(new MessageResponse("Error: username should not be empty"));

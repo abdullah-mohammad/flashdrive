@@ -1,5 +1,4 @@
-package de.flashdrive.backend.security.jwt;
-
+package de.flashdrive.backend.response;
 
 public class MessageResponse {
     private String message;

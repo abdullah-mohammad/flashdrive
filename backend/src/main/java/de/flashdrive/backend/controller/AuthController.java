@@ -2,19 +2,16 @@ package de.flashdrive.backend.controller;
 
 import javax.validation.Valid;
 
-import de.flashdrive.backend.models.SuccessfulOperation;
 import de.flashdrive.backend.models.User;
 import de.flashdrive.backend.repository.UserRepository;
 import de.flashdrive.backend.security.LoginRequest;
 import de.flashdrive.backend.security.SignupRequest;
 import de.flashdrive.backend.security.jwt.JwtResponse;
 import de.flashdrive.backend.security.jwt.JwtUtils;
-import de.flashdrive.backend.security.jwt.MessageResponse;
-import de.flashdrive.backend.services.BlobStorageService;
-import de.flashdrive.backend.services.GCPStorageService;
+import de.flashdrive.backend.response.MessageResponse;
+import de.flashdrive.backend.services.StorageService;
 import de.flashdrive.backend.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,10 +38,7 @@ public class AuthController {
     JwtUtils jwtUtils;
 
     @Autowired
-    GCPStorageService cloudStorageService;
-
-    @Autowired
-    private BlobStorageService blobStorageService;
+    StorageService storageService;
 
 
     @PostMapping("/signin")
@@ -96,11 +90,8 @@ public class AuthController {
                 "");
         try {
             userRepository.save(user);
-            cloudStorageService.createBucket(user.getUsername().toLowerCase());
-            System.out.println(signUpRequest.getUsername());
-            if (blobStorageService.createContainer(signUpRequest.getUsername())) {
-                return new ResponseEntity(new SuccessfulOperation(), HttpStatus.OK);
-            }
+
+            storageService.createBucket(user.getUsername().toLowerCase());
 
         } catch (Exception e) {
             return ResponseEntity.badRequest()
