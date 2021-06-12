@@ -1,10 +1,15 @@
-package de.flashdrive.backend.services;
+package de.flashdrive.backend.services.gcp;
 
 import com.google.api.client.util.Preconditions;
 import com.google.api.gax.paging.Page;
+import com.google.auth.Credentials;
 import com.google.cloud.Identity;
 import com.google.cloud.Policy;
 import com.google.cloud.storage.*;
+import de.flashdrive.backend.services.MimeTypes;
+import de.flashdrive.backend.services.StorageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,25 +18,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Service
-public class GCPStorageService {
+public class GCPStorageService  implements StorageService {
 
+    @Autowired
+    Credentials credentials;
+
+    @Autowired
     Storage storage;
-    String projectId = "flashdrive-311519";
 
-
-    public GCPStorageService() {
-        try {
-            storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
-        } catch (
-                Exception e) {
-            //e.printStackTrace();
-            System.err.println(e.getMessage());
-        }
-
-    }
-
-    public void createBucket(String username) {
+    public boolean createBucket(String username) {
         try {
             String bucketName = "flashdrive-" + username + "-bucket";
             Bucket bucket = storage.create(BucketInfo.of(bucketName));
@@ -45,9 +40,10 @@ public class GCPStorageService {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+        return true;
     }
 
-    public String upload(String username, MultipartFile file) {
+    public boolean upload(String username, MultipartFile file) {
         try {
             String bucketName = "flashdrive-" + username + "-bucket";
                 BlobInfo blobInfo = storage.create(
@@ -56,9 +52,9 @@ public class GCPStorageService {
                         Storage.BlobTargetOption.predefinedAcl(Storage.PredefinedAcl.PUBLIC_READ) // Set file permission
                 );
 
-            return blobInfo.getMediaLink();
+            return true;
         } catch (IllegalStateException | IOException e) {
-            throw new RuntimeException(e);
+            return false;
         }
     }
 
@@ -84,7 +80,7 @@ public class GCPStorageService {
         return blob.delete();
     }
 
-    public List<Map<String, String>> getAll(String username) {
+    public List<Map<String, String>> listOfFiles(String username) {
 
         List<Map<String, String>> list = new ArrayList<>();
 
@@ -98,14 +94,14 @@ public class GCPStorageService {
             map.put("size", blob.getSize().toString());
             map.put("type", blob.getContentType());
             map.put("bucket", blob.getBucket());
-            map.put("last update time", new Date(blob.getUpdateTime()).toString());
+            map.put("last update time", new Date(blob.getCreateTime()).toString());
 
             list.add(map);
         }
         return list;
     }
 
-    public List<Map<String, String>> filterBlobsBy(String username, String name, String ext, String date) {
+    public List<Map<String, String>> filter(String username, String name, String ext, String date) {
 
         List<Map<String, String>> list = new ArrayList<>();
 
@@ -135,7 +131,7 @@ public class GCPStorageService {
                 map.put("size", blob.getSize().toString());
                 map.put("type", blob.getContentType());
                 map.put("bucket", blob.getBucket());
-                map.put("lastUpdate", new SimpleDateFormat("yyyy-MM-dd").format(blob.getUpdateTime()));
+                map.put("lastUpdate", new SimpleDateFormat("yyyy-MM-dd").format(blob.getCreateTime()));
 
                 list.add(map);
             }

@@ -1,4 +1,4 @@
-package de.flashdrive.backend.security;
+package de.flashdrive.backend.configuration;
 
 import de.flashdrive.backend.security.jwt.AuthEntryPointJwt;
 import de.flashdrive.backend.security.jwt.AuthTokenFilter;
