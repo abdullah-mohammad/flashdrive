@@ -16,11 +16,11 @@ public class SignupRequest {
     private String email;
 
     @NotBlank
-    @Size(min = 6, max = 40)
+    @Size(min = 4, max = 40)
     private String firstname;
 
     @NotBlank
-    @Size(min = 6, max = 40)
+    @Size(min = 4, max = 40)
     private String lastname;
 
     @NotBlank

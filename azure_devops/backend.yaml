@@ -16,8 +16,10 @@ spec:
     spec:
       containers:
         - name: backend
-          image: flashdriveContainerRegistry.azurecr.io/flashdrive_backend:latest
+          image: flashdriveContainerRegistry2.azurecr.io/flashdrive_backend:latest
           env:
+            - name: CLOUD_PROVIDER
+              value: Azure
             - name: MYSQL_URL
               value: jdbc:mysql://flashdrive-db-server-test2.mysql.database.azure.com:3306/flashdrive-db?serverTimezone=UTC
             - name: MYSQL_USERNAME

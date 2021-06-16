@@ -94,8 +94,9 @@ public class AuthController {
             storageService.createBucket(user.getUsername().toLowerCase());
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+            System.out.println("\nHERE IS A STRANGE MSG: "+e.getMessage());
+            /*return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: Email is already in use!"));*/
         }
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));

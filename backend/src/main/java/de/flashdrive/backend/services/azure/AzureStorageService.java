@@ -37,10 +37,17 @@ public class AzureStorageService implements StorageService {
     }
 
     public List<Map<String, String>> listOfFiles(String username) {
-        String containerName = "flashdrive-" + username + "-bucket";
-        return blobServiceClient.getBlobContainerClient(containerName).listBlobs().stream()
+        String containerName = "flashdrive-" + username.toLowerCase() + "-bucket";
+        String containerUrl = blobServiceClient.getBlobContainerClient(containerName).getBlobContainerUrl();
+
+        // this line allows getting access to file metadata (if exist) and not always returning null
+        ListBlobsOptions options = new ListBlobsOptions().setDetails(new BlobListDetails().setRetrieveMetadata(true));
+
+        return blobServiceClient.getBlobContainerClient(containerName).listBlobs(options, null).stream()
                 .map(blob -> {
                     Map<String, String> map = new HashMap<>();
+                    map.put("fileID", blob.getMetadata() != null ? blob.getMetadata().get("fileID") : null);
+                    map.put("url", containerUrl+blob.getName());
                     map.put("name", blob.getName());
                     map.put("size", blob.getProperties().toString());
                     map.put("type", blob.getProperties().getContentType());
@@ -52,14 +59,16 @@ public class AzureStorageService implements StorageService {
 
     public boolean upload(String username, MultipartFile file) {
         try {
-            String containerName = "flashdrive-" + username + "-bucket";
+            String containerName = "flashdrive-" + username.toLowerCase() + "-bucket";
             BlobListDetails blobListDetails = new BlobListDetails().setRetrieveMetadata(true);//set "retrieve metadata" option to true
             ListBlobsOptions listBlobsOptions = new ListBlobsOptions().setDetails(blobListDetails);
             BlobAsyncClient blobAsyncClient = blobServiceAsyncClient.getBlobContainerAsyncClient(containerName).getBlobAsyncClient(file.getOriginalFilename());
 
             Flux<ByteBuffer> data = Flux.just(ByteBuffer.wrap(file.getBytes()));
             ParallelTransferOptions parallelTransferOptions = new ParallelTransferOptions(numBuffers, blockSize, null);
-            blobAsyncClient.upload(data, parallelTransferOptions, true).block();
+            blobAsyncClient.upload(data, parallelTransferOptions, true)
+                    .then(blobAsyncClient.setMetadata(Collections.singletonMap("fileID", String.valueOf(blobServiceClient.getBlobContainerClient(containerName).listBlobs().stream().count()+1))))
+                    .block();
             return true;
         } catch (IOException e) {
             return false;

@@ -6,13 +6,13 @@ services:
   backend:
     # Configuration for building the docker image for the backend service
     build: ./../backend
-    image: flashdriveContainerRegistry.azurecr.io/flashdrive_backend
+    image: flashdriveContainerRegistry2.azurecr.io/flashdrive_backend
     restart: always     
 
 #  Frontend Service 
   frontend:
     build: ./../frontend
-    image: flashdriveContainerRegistry.azurecr.io/flashdrive_frontend
+    image: flashdriveContainerRegistry2.azurecr.io/flashdrive_frontend
     ports:
       - "5000:80" # Map the exposed port 80 on the container to port 5000 on the host machine
     restart: always
