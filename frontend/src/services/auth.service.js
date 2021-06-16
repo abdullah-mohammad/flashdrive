@@ -10,7 +10,7 @@ const API_URL = "http://20.82.205.16/api/auth/";
 
 class AuthService {
   login(username, password) {
-    /* return axios
+    return axios
       .post(API_URL + "signin", {
         username,
         password
@@ -21,12 +21,7 @@ class AuthService {
         }
 
         return response.data;
-      }); */
-      return axios
-        .get(API_URL + "ddd")
-        .then(response => {
-          console.log("DDD: ", response.data)
-        });
+      });
   }
 
   logout() {
