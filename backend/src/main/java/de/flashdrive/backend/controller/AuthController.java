@@ -40,6 +40,10 @@ public class AuthController {
     @Autowired
     StorageService storageService;
 
+    @GetMapping("ddd")
+    public String getD() {
+        return System.getenv("MYSQL_PASSWORD");
+    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> signedUser(@Valid @RequestBody LoginRequest loginRequest) {
