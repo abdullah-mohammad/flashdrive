@@ -21,7 +21,7 @@ spec:
             - name: CLOUD_PROVIDER
               value: Azure
             - name: MYSQL_URL
-              value: jdbc:mysql://flashdrive-db-server-test2.mysql.database.azure.com:3306/flashdrive-db?serverTimezone=UTC
+              value: jdbc:mysql://flashdrive-mysql-server.mysql.database.azure.com:3306/flashdrive-db?useSSL=true&requireSSL=false
             - name: MYSQL_USERNAME
               valueFrom:
                 secretKeyRef:

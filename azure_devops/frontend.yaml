@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: flashdrivecontainerregistry2.azurecr.io/flashdrive_frontend:latest
+          image: flashdriveContainerRegistry2.azurecr.io/flashdrive_frontend:latest
           ports:
           - containerPort: 80
