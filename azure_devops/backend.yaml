@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: flashdriveContainerRegistry2.azurecr.io/flashdrive_backend:latest
+          image: flashdrivecontainerregistry2.azurecr.io/flashdrive_backend:latest
           env:
             - name: CLOUD_PROVIDER
               value: Azure
