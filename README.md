@@ -36,7 +36,7 @@ Navigate to the url in your browser:
 
 `cd azure_devops`
 
-`docker-compose up -d `
+`docker-compose up -d`
 
 `docker-compose push`
 
