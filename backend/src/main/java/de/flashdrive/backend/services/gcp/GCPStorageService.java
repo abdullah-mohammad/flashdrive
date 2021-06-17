@@ -9,11 +9,12 @@ import com.google.cloud.storage.*;
 import de.flashdrive.backend.services.MimeTypes;
 import de.flashdrive.backend.services.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -58,7 +59,7 @@ public class GCPStorageService  implements StorageService {
         }
     }
 
-    public byte[] download(String username, String fileName) {
+    public ByteArrayOutputStream download(String username, String fileName) {
         try {
             String bucketName = "flashdrive-" + username + "-bucket";
             Bucket bucket = storage.get(bucketName);
@@ -66,8 +67,11 @@ public class GCPStorageService  implements StorageService {
 
             Blob blob = bucket.get(fileName);
             Preconditions.checkNotNull(blob, "blob [%s] not found", fileName);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            blob.downloadTo(Paths.get("./"));
+            return os;
 
-            return blob.getContent();
+            //return blob.getContent();
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return null;

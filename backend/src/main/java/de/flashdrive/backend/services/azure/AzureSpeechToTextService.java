@@ -1,36 +1,32 @@
 package de.flashdrive.backend.services.azure;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ResponseObserver;
 import com.google.api.gax.rpc.StreamController;
-import com.google.cloud.speech.v1p1beta1.*;
+import com.google.cloud.speech.v1.*;
 import com.google.protobuf.ByteString;
 import com.microsoft.cognitiveservices.speech.*;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
 import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
+
+import javax.sound.sampled.*;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.concurrent.Future;
+
 import de.flashdrive.backend.services.SpeechToTextService;
 import de.flashdrive.backend.services.StorageService;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.persistence.Access;
-import javax.sound.sampled.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Future;
 
 public class AzureSpeechToTextService implements SpeechToTextService {
 
 
     @Autowired
     StorageService storageService;
+
+
     // [START speech_transcribe_streaming_mic]
 
     /**
@@ -126,28 +122,26 @@ public class AzureSpeechToTextService implements SpeechToTextService {
     // [END speech_transcribe_streaming_mic]
 
     public String convertSpeechToText(String username, String filename) throws Exception {
+        SpeechConfig speechConfig = SpeechConfig.fromSubscription("730aecb689d24fdfb593c45ec857a0f8", "northeurope");
 
-        String result = null;
-        try
-        {
-            final Path path = Files.createTempFile(filename, filename.substring(filename.lastIndexOf(".")));
-            File file  = new File(String.valueOf(path));
-            System.out.println("Temp file : " + path);
+        String suffix = filename.substring(filename.lastIndexOf("."));
+        //String result = null;
 
-            //Writing data here
-            byte[] buf =  storageService.download(username, filename);
-            System.out.println(buf);
-            Files.write(file.toPath(), buf);
-            result = audioToText(file);
-            path.toFile().deleteOnExit();
+        File file = Files.createTempFile(filename, suffix).toFile();
+        byte[] fileByteArray = storageService.download(username, filename).toByteArray();
 
-        } catch (IOException e)
-        {
-            System.out.println(e.getMessage());
+        File sourceFile = Files.createTempFile(filename, suffix).toFile();
+        try (FileOutputStream fos = new FileOutputStream(sourceFile)) {
+            fos.write(fileByteArray);
         }
 
-        return result;
+        AudioConfig audioConfig = AudioConfig.fromWavFileInput(sourceFile.getAbsolutePath());
 
+        SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig, audioConfig);
+        Future<com.microsoft.cognitiveservices.speech.SpeechRecognitionResult> task = recognizer.recognizeOnceAsync();
+        SpeechRecognitionResult result = task.get();
+        file.deleteOnExit();
+        return result.getText();
     }
 
 
@@ -180,6 +174,5 @@ public class AzureSpeechToTextService implements SpeechToTextService {
         System.out.println("RECOGNIZED: Text=" + result.getText());
         return result.getText();
     }
-
 
 }

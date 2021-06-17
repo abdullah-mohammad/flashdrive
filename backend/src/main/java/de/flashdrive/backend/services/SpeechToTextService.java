@@ -15,5 +15,5 @@ public interface SpeechToTextService {
 
     String convertSpeechToText(String username, String filename) throws Exception;
 
-    String streamingMicRecognize();
+    /*String streamingMicRecognize();*/
 }

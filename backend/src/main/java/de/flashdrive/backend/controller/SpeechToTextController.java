@@ -85,7 +85,7 @@ public class SpeechToTextController {
         if (storageService.upload(username, multipartTextFile)) textFile.deleteOnExit();
     }
 
-    @GetMapping("/speech/mic")
+    /*@GetMapping("/speech/mic")
     public ResponseEntity<?> convertSpeechToTextWithMic() throws Exception {
 
         String text = speechToTextService.streamingMicRecognize();
@@ -95,5 +95,5 @@ public class SpeechToTextController {
         else
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-    }
+    }*/
 }

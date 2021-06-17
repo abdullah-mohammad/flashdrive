@@ -10,6 +10,7 @@ import de.flashdrive.backend.services.StorageService;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.*;
@@ -55,11 +56,13 @@ public class AzureStorageService implements StorageService {
             String containerName = "flashdrive-" + username + "-bucket";
             BlobListDetails blobListDetails = new BlobListDetails().setRetrieveMetadata(true);//set "retrieve metadata" option to true
             ListBlobsOptions listBlobsOptions = new ListBlobsOptions().setDetails(blobListDetails);
-            BlobAsyncClient blobAsyncClient = blobServiceAsyncClient.getBlobContainerAsyncClient(containerName).getBlobAsyncClient(file.getOriginalFilename());
+            //BlobAsyncClient blobAsyncClient = blobServiceAsyncClient.getBlobContainerAsyncClient(containerName).getBlobAsyncClient(file.getOriginalFilename());
+            BlobClient blobClient = blobServiceClient.getBlobContainerClient(containerName).getBlobClient(file.getOriginalFilename());
 
             Flux<ByteBuffer> data = Flux.just(ByteBuffer.wrap(file.getBytes()));
             ParallelTransferOptions parallelTransferOptions = new ParallelTransferOptions(numBuffers, blockSize, null);
-            blobAsyncClient.upload(data, parallelTransferOptions, true).block();
+            //blobAsyncClient.upload(data, parallelTransferOptions, true).block();
+            blobClient.upload(file.getInputStream(), file.getSize(), true);
             return true;
         } catch (IOException e) {
             return false;
@@ -74,10 +77,14 @@ public class AzureStorageService implements StorageService {
         return true;
     }
 
-    public byte[] download(String username, String fileName) {
+    public ByteArrayOutputStream download(String username, String fileName) {
         String containerName = "flashdrive-" + username + "-bucket";
-        BlobAsyncClient blobAsyncClient = blobServiceAsyncClient.getBlobContainerAsyncClient(containerName).getBlobAsyncClient(fileName);
-        return blobAsyncClient.download().blockLast().array();
+        BlobContainerClient container = blobServiceClient.getBlobContainerClient(containerName);
+        BlobClient blobClient = container.getBlobClient(fileName);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        blobClient.download(os);
+        return os;
     }
 
     public List<Map<String, String>> filter(String username, String name, String ext, String date) {
