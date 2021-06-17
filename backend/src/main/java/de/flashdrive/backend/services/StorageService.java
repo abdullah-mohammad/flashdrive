@@ -3,6 +3,7 @@ package de.flashdrive.backend.services;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ public interface StorageService {
 
     boolean upload(String username, MultipartFile file);
 
-    byte[] download(String username, String fileName);
+    ByteArrayOutputStream download(String username, String fileName);
 
     boolean delete(String username, String fileName);
 

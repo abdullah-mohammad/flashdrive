@@ -152,6 +152,13 @@
             <artifactId>azure-storage</artifactId>
             <version>8.4.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.microsoft.cognitiveservices.speech</groupId>
+            <artifactId>client-sdk</artifactId>
+            <version>1.12.1</version>
+        </dependency>
+
         <!-- END EXTRA DEPENDENCIES -->
     </dependencies>
 
@@ -168,5 +175,17 @@
             </plugin>
         </plugins>
     </build>
+
+
+
+
+
+    <repositories>
+        <repository>
+            <id>maven-cognitiveservices-speech</id>
+            <name>Microsoft Cognitive Services Speech Maven Repository</name>
+            <url>https://csspeechstorage.blob.core.windows.net/maven/</url>
+        </repository>
+    </repositories>
 
 </project>

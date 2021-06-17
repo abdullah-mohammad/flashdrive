@@ -9,13 +9,16 @@ import com.google.cloud.speech.v1p1beta1.*;
 import com.google.protobuf.ByteString;
 import de.flashdrive.backend.services.SpeechToTextService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.sound.sampled.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class GCPSpeechToTextService implements SpeechToTextService {
@@ -108,6 +111,8 @@ public class GCPSpeechToTextService implements SpeechToTextService {
         responseObserver.onComplete();
         return resultText.toString();
     }
+
+
     // [END speech_transcribe_streaming_mic]
 
     public String convertSpeechToText(String username,String filename) throws Exception {
@@ -140,7 +145,7 @@ public class GCPSpeechToTextService implements SpeechToTextService {
         }
     }
 
-    public String audioFileToText(InputStream stream) throws Exception {
+    public String audioFileToText(MultipartFile multipartFile) throws Exception {
 
         try (SpeechClient client = SpeechClient.create()) {
             RecognitionConfig.Builder builder = RecognitionConfig.newBuilder()
@@ -155,7 +160,7 @@ public class GCPSpeechToTextService implements SpeechToTextService {
 
             RecognitionConfig config = builder.build();
 
-            RecognitionAudio audio = RecognitionAudio.newBuilder().setContent(ByteString.readFrom(stream)).build();
+            RecognitionAudio audio = RecognitionAudio.newBuilder().setContent(ByteString.readFrom(multipartFile.getInputStream())).build();
 
             OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response = client.longRunningRecognizeAsync(config, audio);
 

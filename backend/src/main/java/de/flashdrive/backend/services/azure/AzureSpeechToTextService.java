@@ -1,22 +1,37 @@
 package de.flashdrive.backend.services.azure;
 
-import com.google.api.gax.longrunning.OperationFuture;
 import com.google.api.gax.rpc.ClientStream;
 import com.google.api.gax.rpc.ResponseObserver;
 import com.google.api.gax.rpc.StreamController;
-import com.google.cloud.speech.v1p1beta1.*;
+import com.google.cloud.speech.v1.*;
 import com.google.protobuf.ByteString;
-import de.flashdrive.backend.services.SpeechToTextService;
+import com.microsoft.cognitiveservices.speech.*;
+import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
+import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 
 import javax.sound.sampled.*;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.Future;
+
+import de.flashdrive.backend.services.SpeechToTextService;
+import de.flashdrive.backend.services.StorageService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 public class AzureSpeechToTextService implements SpeechToTextService {
+
+
+    @Autowired
+    StorageService storageService;
+
+
     // [START speech_transcribe_streaming_mic]
-    /** Performs microphone streaming speech recognition with a duration of 1 minute. */
+
+    /**
+     * Performs microphone streaming speech recognition with a duration of 1 minute.
+     */
     public String streamingMicRecognize() {
         StringBuilder resultText = new StringBuilder();
         ResponseObserver<StreamingRecognizeResponse> responseObserver = null;
@@ -25,7 +40,8 @@ public class AzureSpeechToTextService implements SpeechToTextService {
             responseObserver = new ResponseObserver<StreamingRecognizeResponse>() {
                 ArrayList<StreamingRecognizeResponse> responses = new ArrayList<>();
 
-                public void onStart(StreamController controller) {}
+                public void onStart(StreamController controller) {
+                }
 
                 public void onResponse(StreamingRecognizeResponse response) {
                     responses.add(response);
@@ -105,70 +121,58 @@ public class AzureSpeechToTextService implements SpeechToTextService {
     }
     // [END speech_transcribe_streaming_mic]
 
-    public String convertSpeechToText(String username,String filename) throws Exception {
-        try (SpeechClient client = SpeechClient.create()) {
-            RecognitionConfig.Builder builder = RecognitionConfig.newBuilder().setSampleRateHertz(16000).setEncoding(RecognitionConfig.AudioEncoding.MP3)
-                    .setLanguageCode("de-DE").setEnableAutomaticPunctuation(true).setEnableWordTimeOffsets(true).setAudioChannelCount(2);
-            builder.setModel("default");
+    public String convertSpeechToText(String username, String filename) throws Exception {
+        SpeechConfig speechConfig = SpeechConfig.fromSubscription("730aecb689d24fdfb593c45ec857a0f8", "northeurope");
 
-            RecognitionConfig config = builder.build();
+        String suffix = filename.substring(filename.lastIndexOf("."));
+        //String result = null;
 
-            RecognitionAudio audio = RecognitionAudio.newBuilder().setUri("gs://flashdrive-"+username+"-bucket/"+filename).build();
+        File file = Files.createTempFile(filename, suffix).toFile();
+        byte[] fileByteArray = storageService.download(username, filename).toByteArray();
 
-            OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response = client.longRunningRecognizeAsync(config, audio);
-
-            while (!response.isDone()) {
-                Thread.sleep(10000);
-            }
-
-            List<SpeechRecognitionResult> speechResults = response.get().getResultsList();
-
-            StringBuilder transcription = new StringBuilder();
-            for (SpeechRecognitionResult result : speechResults) {
-                SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-                transcription.append(alternative.getTranscript());
-            }
-            return transcription.toString();
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-            return null;
+        File sourceFile = Files.createTempFile(filename, suffix).toFile();
+        try (FileOutputStream fos = new FileOutputStream(sourceFile)) {
+            fos.write(fileByteArray);
         }
+
+        AudioConfig audioConfig = AudioConfig.fromWavFileInput(sourceFile.getAbsolutePath());
+
+        SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig, audioConfig);
+        Future<com.microsoft.cognitiveservices.speech.SpeechRecognitionResult> task = recognizer.recognizeOnceAsync();
+        SpeechRecognitionResult result = task.get();
+        file.deleteOnExit();
+        return result.getText();
     }
 
-    public String audioFileToText(InputStream stream) throws Exception {
 
-        try (SpeechClient client = SpeechClient.create()) {
-            RecognitionConfig.Builder builder = RecognitionConfig.newBuilder()
-                    .setEncoding(RecognitionConfig.AudioEncoding.MP3)
-                    .setLanguageCode("de-DE")
-                    .setSampleRateHertz(16000)
-                    .setEnableAutomaticPunctuation(true)
-                    .setEnableWordTimeOffsets(true)
-                    .setAudioChannelCount(2);
+    public String audioFileToText(MultipartFile multipartFile) throws Exception {
 
-            builder.setModel("default");
+        String fileName = multipartFile.getOriginalFilename();
+        String prefix = fileName.substring(fileName.lastIndexOf("."));
 
-            RecognitionConfig config = builder.build();
+        File file = null;
+        try {
+            file = File.createTempFile(fileName, prefix);
+            multipartFile.transferTo(file);
+        } catch (Exception e) {
+            e.printStackTrace();
 
-            RecognitionAudio audio = RecognitionAudio.newBuilder().setContent(ByteString.readFrom(stream)).build();
-
-            OperationFuture<LongRunningRecognizeResponse, LongRunningRecognizeMetadata> response = client.longRunningRecognizeAsync(config, audio);
-
-            while (!response.isDone()) {
-                Thread.sleep(10000);
-            }
-
-            List<SpeechRecognitionResult> speechResults = response.get().getResultsList();
-
-            StringBuilder transcription = new StringBuilder();
-            for (SpeechRecognitionResult result : speechResults) {
-                SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-                transcription.append(alternative.getTranscript());
-            }
-            return transcription.toString();
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-            return null;
         }
+
+        String result = audioToText(file);
+
+        return result;
     }
+
+
+    private String audioToText(File file) throws InterruptedException, java.util.concurrent.ExecutionException {
+        SpeechConfig speechConfig = SpeechConfig.fromSubscription("730aecb689d24fdfb593c45ec857a0f8", "northeurope");
+        AudioConfig audioConfig = AudioConfig.fromWavFileInput(file.getPath());
+        SpeechRecognizer recognizer = new SpeechRecognizer(speechConfig, audioConfig);
+        Future<com.microsoft.cognitiveservices.speech.SpeechRecognitionResult> task = recognizer.recognizeOnceAsync();
+        SpeechRecognitionResult result = task.get();
+        System.out.println("RECOGNIZED: Text=" + result.getText());
+        return result.getText();
+    }
+
 }

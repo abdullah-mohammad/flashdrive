@@ -2,8 +2,9 @@ package de.flashdrive.backend.controller;
 
 import de.flashdrive.backend.response.MessageResponse;
 import de.flashdrive.backend.services.StorageService;
+import de.flashdrive.backend.services.MimeTypes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,13 +37,22 @@ public class StorageController {
             value = "/download/{username}/{filename}",
             produces = {MediaType.ALL_VALUE}
     )
-    public @ResponseBody byte[] handleFileDownload(HttpServletResponse response,
-                                                   @PathVariable("username") String username,
-                                                   @PathVariable("filename") String fileName,
-                                                   @RequestParam(value = "path", required = false) String path) {
+    public ResponseEntity<ByteArrayResource> handleFileDownload(HttpServletResponse response,
+                                                                @PathVariable("username") String username,
+                                                                @PathVariable("filename") String fileName,
+                                                                @RequestParam(value = "path", required = false) String path) {
 
-        response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
-        return storageService.download(username,fileName);
+        byte[] data = storageService.download(username,fileName).toByteArray();
+
+        ByteArrayResource resource = new ByteArrayResource(data);
+
+        return ResponseEntity
+                .ok()
+                .contentLength(data.length)
+                .header("Content-type", MimeTypes.getMimeType(fileName.split("\\.")[0]))
+                .header("Content-disposition", "attachment; filename=\"" + fileName + "\"")
+                .body(resource);
+
     }
 
     @GetMapping("/all/{username}")

@@ -1,10 +1,11 @@
 package de.flashdrive.backend.controller;
 
-import com.google.auth.Credentials;
-import com.google.cloud.storage.Storage;
+
+import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import de.flashdrive.backend.services.MimeTypes;
 import de.flashdrive.backend.services.SpeechToTextService;
 import de.flashdrive.backend.services.StorageService;
+import de.flashdrive.backend.services.azure.AzureSpeechToTextService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,18 +32,14 @@ public class SpeechToTextController {
     @Autowired
     StorageService storageService;
 
-    Credentials credentials;
-
-    Storage storage;
-
 
     @PostMapping("/speech")
     public ResponseEntity<?> convertSpeechToText(@RequestParam("username") String username, @RequestParam("file") MultipartFile file) throws Exception {
 
-        String result="";
+        String result = "";
 
-        if (file!=null){
-            result = speechToTextService.audioFileToText(file.getInputStream());
+        if (file != null) {
+            result = speechToTextService.audioFileToText(file);
         }
 
         if (!result.isEmpty()) {
@@ -59,14 +56,14 @@ public class SpeechToTextController {
     @GetMapping("/speech/{username}/{filename}")
     public ResponseEntity<?> convertSpeechToTextWithMic(@PathVariable("username") String username, @PathVariable("filename") String filename) throws Exception {
 
-        String result = speechToTextService.convertSpeechToText(username,filename);
+        String result = speechToTextService.convertSpeechToText(username, filename);
 
         if (!result.isEmpty()) {
             saveTextFile(username, result, filename);
         }
 
         if (result != null)
-            return new ResponseEntity<>(result,HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -85,18 +82,18 @@ public class SpeechToTextController {
                 textFile.getName(), MimeTypes.getMimeType("txt"),
                 IOUtils.toByteArray(new FileInputStream(textFile)));
 
-        storageService.upload(username, multipartTextFile);
+        if (storageService.upload(username, multipartTextFile)) textFile.deleteOnExit();
     }
 
-    @GetMapping("/speech/mic")
+    /*@GetMapping("/speech/mic")
     public ResponseEntity<?> convertSpeechToTextWithMic() throws Exception {
 
         String text = speechToTextService.streamingMicRecognize();
 
         if (text != null)
-            return new ResponseEntity<>(text,HttpStatus.OK);
+            return new ResponseEntity<>(text, HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-    }
+    }*/
 }
